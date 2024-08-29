@@ -34,6 +34,7 @@ export function UserAuthForm({ className, ...props }: UserAuthFormProps) {
 
       await fetch("http://localhost:3333/auth/login", {
         method: "POST",
+        credentials: "include",
         headers: {
           "Content-Type": "application/json",
         },
