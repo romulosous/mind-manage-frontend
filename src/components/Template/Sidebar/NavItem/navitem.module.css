@@ -1,0 +1,36 @@
+.item {
+	position: relative;
+	box-sizing: border-box;
+	font-weight: 500;
+	width: 80px;
+	width: 100%;
+	border-bottom: 1px solid rgba(255, 255, 255, 0.8);
+	color: var(--white);
+	text-decoration: none;
+	display: flex;
+	flex-direction: column;
+	align-items: center;
+	cursor: pointer;
+	padding: 20px 18px;
+	transition: background-color 1s ease;
+	gap: 6px;
+}
+
+.activeLink {
+	background:  var(--primary);
+	display: flex;
+	align-items: center;
+	justify-content: center;
+	width: 80px;
+    border-radius: 12px;
+}
+
+.item:hover {
+	background-color: rgba(0, 0, 0, 0.055);
+}
+
+.item span {
+	text-overflow: ellipsis;
+	white-space: nowrap;
+	user-select: none;
+}
