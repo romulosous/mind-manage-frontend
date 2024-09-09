@@ -1,0 +1,15 @@
+.container {
+	background-color: var(--color-gray);
+	height: calc(100vh - (65px));
+	overflow-y: auto;
+}
+.warp {
+	margin: 2rem 1rem;
+	margin-bottom: var(--spacing-9);
+}
+
+@media (min-width: 768px) {
+	.warp {
+		margin-right: 5.625rem;
+	}
+}

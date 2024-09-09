@@ -1,0 +1,45 @@
+.container {
+	display: flex;
+	flex-direction: column;
+	height: 100%;
+	justify-content: space-between;
+}
+.accountProfile{
+	position: relative;
+	display: flex;
+	justify-content: flex-end;
+}
+.dropdown{
+	position: absolute;
+	top: 54px;
+}
+.closed{
+	right: -1rem;
+	top: -13px;
+	display: block;
+	position: absolute;
+	width: 100vw;
+	height: 100vh;
+	/* z-index: var(--layer-overlay); */
+	z-index: 10;
+}
+.profile {
+	display: flex;
+	align-items: center;
+	background-color: inherit;
+	border: none;
+	cursor: pointer;
+}
+.circle {
+	width: 38px;
+	height: 38px;
+	border-radius: 100%;
+	display: flex;
+	justify-content: center;
+	align-items: center;
+	background-color: white;
+	color: #159A9C;
+}
+.profileArrow {
+	margin-left: var(--spacing-half);
+}
