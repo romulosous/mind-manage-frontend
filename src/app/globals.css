@@ -10,14 +10,14 @@
     --card-foreground: 222.2 84% 4.9%;
     --popover: 0 0% 100%;
     --popover-foreground: 222.2 84% 4.9%;
-    --primary: 222.2 47.4% 11.2%;
+    --primary: 182 76% 35%;
     --primary-foreground: 210 40% 98%;
     --secondary: 210 40% 96.1%;
-    --secondary-foreground: 222.2 47.4% 11.2%;
+    --secondary-foreground: 182 76% 35%;
     --muted: 210 40% 96.1%;
     --muted-foreground: 215.4 16.3% 46.9%;
     --accent: 210 40% 96.1%;
-    --accent-foreground: 222.2 47.4% 11.2%;
+    --accent-foreground: 182 76% 35%;
     --destructive: 0 84.2% 60.2%;
     --destructive-foreground: 210 40% 98%;
     --border: 214.3 31.8% 91.4%;
@@ -29,6 +29,60 @@
     --chart-3: 197 37% 24%;
     --chart-4: 43 74% 66%;
     --chart-5: 27 87% 67%;
+
+    /* --font-family: "Poppins", -apple-system, BlinkMacSystemFont, Segoe UI,
+      Roboto, Oxygen, Ubuntu, Cantarell, Fira Sans, Droid Sans, Helvetica Neue,
+      sans-serif; */
+
+    --font-size-xxsmall: 0.75rem;
+    --font-size-xsmall: 0.875rem;
+    --font-size-small: 1rem;
+    --font-size-xmedium: 1.125rem;
+    --font-size-medium: 1.5rem;
+    --font-size-large: 2rem;
+    --font-size-xlarge: 2.25rem;
+
+    --primary: #159A9C;
+    --primary-light: #DEEFE7;
+    --secondary: #002333;
+    --gray: #B4BEC9
+    --white: #ffffff;
+    --black: #000000;
+
+    --red-light: #F1827433;
+    --red: #F23030;
+    --red--dark: #A62934;
+
+
+
+    --spacing-0: 0;
+    --spacing-half: 0.25rem;
+    --spacing-1: 0.5rem;
+    --spacing-2: 0.75rem;
+    --spacing-3: 1rem;
+    --spacing-4: 1.25rem;
+    --spacing-5: 1.5rem;
+    --spacing-6: 2rem;
+    --spacing-7: 3rem;
+    --spacing-8: 4rem;
+    --spacing-9: 5rem;
+
+    --themed-border: 1px solid #bdbdbd;
+
+    --layer-base: 10;
+    --layer-menu: 20;
+    --layer-overlay: 30;
+    --layer-modal: 40;
+    --layer-alwaysOnTop: 50;
+
+    --shadow: 0 1px 3px rgba(0, 0, 0, 0.2), 0 2px 2px rgba(0, 0, 0, 0.12),
+      0 0 2px rgba(0, 0, 0, 0.14);
+    --shadow-hover: 0 1px 2px -2px rgba(0, 0, 0, 0.16),
+      0 3px 6px 0 rgba(0, 0, 0, 0.12), 0 5px 12px 4px rgba(0, 0, 0, 0.1);
+
+    --transition-border-shadow: border 0.3s, box-shadow 0.3s;
+
+    --small-device: 20rem;
   }
 
   .dark {
@@ -39,7 +93,7 @@
     --popover: 222.2 84% 4.9%;
     --popover-foreground: 210 40% 98%;
     --primary: 210 40% 98%;
-    --primary-foreground: 222.2 47.4% 11.2%;
+    --primary-foreground: 182 76% 35%;
     --secondary: 217.2 32.6% 17.5%;
     --secondary-foreground: 210 40% 98%;
     --muted: 217.2 32.6% 17.5%;
@@ -62,9 +116,20 @@
 @layer base {
   * {
     @apply border-border;
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
   }
+  *:focus {
+    outline-color: #159A9C;
+  }
+
   body {
     @apply bg-background text-foreground;
     height: 100vh;
+    min-width: var(--small-device);
+    color: var(--gray-800);
+    -webkit-font-smoothing: antialiased;
+    -moz-osx-font-smoothing: grayscale;
   }
 }
