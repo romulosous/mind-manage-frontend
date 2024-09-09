@@ -1,0 +1,38 @@
+.header {
+	background-color: #159A9C;
+	width: 100%;
+	color: white;
+}
+.container {
+	margin: auto 1rem;
+}
+.wrapper {
+	height: 70px;
+	display: flex;
+	align-items: center;
+	justify-content: center;
+	/* justify-content: space-between; */
+}
+
+.logoWrapper {
+	display: flex;
+}
+
+.menu {
+	cursor: pointer;
+	width: 30px;
+	height: 30px;
+	position: absolute;
+	left: 40px;
+}
+
+.logo {
+	font-size: 1.5625rem;
+	font-weight: 700;
+}
+
+@media (min-width: 740px) {
+	.menu {
+		display: none;
+	}
+}
