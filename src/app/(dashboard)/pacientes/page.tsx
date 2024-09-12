@@ -1,3 +1,6 @@
+import { Patient } from "./_components/Patient";
+
+
 export default async function Home() {
 
   const response = await fetch("http://localhost:3333/patient")
@@ -14,12 +17,7 @@ export default async function Home() {
   }
   return (
     <div className="">
-      <ul>
-        {json?.data?.map((item : any) => (
-          <li key={item.id}>{item.name}</li>
-        ))}
-      </ul>
-      <h1>Pacientes</h1>
+      <Patient />
     </div>
   );
 }

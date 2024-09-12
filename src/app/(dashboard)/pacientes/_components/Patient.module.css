@@ -1,0 +1,9 @@
+.container {
+    background: var(--secondary);
+    padding: 28px;
+    border-radius: 10px;
+}
+
+.table {
+    border-radius: 10px;
+}
