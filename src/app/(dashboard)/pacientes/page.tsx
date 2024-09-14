@@ -5,7 +5,7 @@ export default async function Home() {
 
   const response = await fetch("http://localhost:3333/patient")
   const json = await response.json()
-  console.log(json)
+  console.log("json: ", json)
 
   if (json.length === 0) {
     return (
@@ -17,7 +17,7 @@ export default async function Home() {
   }
   return (
     <div className="">
-      <Patient />
+      <Patient data={json.data} count={json.count} />
     </div>
   );
 }
