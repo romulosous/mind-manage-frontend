@@ -1,22 +1,46 @@
+"use client"
+
+import { useEffect, useState } from "react";
 import { Patient } from "./_components/Patient";
+import { patientApi } from "@/services/patient";
+import Loading from "@/components/Loading";
 
 
-export default async function Home() {
+export default function Home() {
 
-  const response = await fetch("http://localhost:3333/patient")
-  const json = await response.json()
+  const [patients, setPatients] = useState([]);
+  const [count, setCount] = useState(0);
+  const [loading, setLoading] = useState(true);
 
-  if (json.length === 0) {
-    return (
-      <div className="">
-        <h1>Pacientes</h1>
-        <p>Nenhum paciente cadastrado</p>
-      </div>
-    );
+  interface PatientResponse {
+    data: [];
+    count: number;
   }
+  
+  const fetchPatients = async () => {
+    try {
+      const response = await patientApi.fetchPatients({}) as PatientResponse
+      setPatients(response.data)
+      setCount(response.count)
+      console.log(response)
+    } catch (error) {
+      console.log(error)
+    } finally {
+      setLoading(false)
+    }
+  }
+
+  useEffect(() => {
+    fetchPatients()
+  }, []);
+
+  if(loading) {
+    return <Loading />
+  }
+
   return (
     <div className="">
-      <Patient data={json.data} count={json.count} />
+      <Patient data={patients} count={count} />
     </div>
   );
 }

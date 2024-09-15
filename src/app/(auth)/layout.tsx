@@ -3,7 +3,7 @@
 import { checkUserAuthenticated } from "@/functions/check-user-authenticated";
 import { useRouter } from "next/navigation";
 
-export default function RootLayout({
+export default function AuthLayout({
   children,
 }: Readonly<{
   children: React.ReactNode;
@@ -12,7 +12,7 @@ export default function RootLayout({
     if (typeof window !== "undefined") {
         const isAuthenticated = checkUserAuthenticated();
         if(isAuthenticated){
-            router.replace("/home");
+            // router.replace("/home");
         }
     }
 

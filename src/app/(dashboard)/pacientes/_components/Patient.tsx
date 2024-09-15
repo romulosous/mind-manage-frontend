@@ -12,7 +12,7 @@ import styles from "./Patient.module.css";
 import { PatientType, PatientTypeDisplay } from "@/@types/patient";
 
 interface User {
-  serie: any;
+  series: any;
   numberSessions: any;
   id: number;
   name: string;
@@ -206,11 +206,11 @@ export const Patient = ({data, count}: PatientProps) => {
             return (
               <TableRow key={item.id} style={{}} className={`${(index + 1) % 2 == 0 ? 'bg-[#EFF1F3]' : ''}`}>
                 <TableCell>{item.name}</TableCell>
-                <TableCell>{item.registration}</TableCell>
+                <TableCell>{item.registration ? item.registration : "----"}</TableCell>
                 <TableCell>{PatientTypeDisplay[item.patientType]}</TableCell>
-                <TableCell>{item.course}</TableCell>
-                <TableCell>{item?.serie ? item?.serie : "---"}</TableCell>
-                <TableCell>{item?.numberSessions ? item?.numberSessions : "---"}</TableCell>
+                <TableCell>{item.course ? item?.course : "----"}</TableCell>
+                <TableCell>{item?.series ? item?.series : "----"}</TableCell>
+                <TableCell>{item?.numberSessions ? item?.numberSessions : "----"}</TableCell>
               </TableRow>
             );
           })}
