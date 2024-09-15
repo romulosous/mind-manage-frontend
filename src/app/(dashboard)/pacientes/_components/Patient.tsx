@@ -8,8 +8,26 @@ import {
   TableRow,
 } from "@/components/ui/table";
 
+import {
+  ColumnDef,
+  ColumnFiltersState,
+  SortingState,
+  VisibilityState,
+  flexRender,
+  getCoreRowModel,
+  getFilteredRowModel,
+  getPaginationRowModel,
+  getSortedRowModel,
+  useReactTable,
+} from "@tanstack/react-table";
+
 import styles from "./Patient.module.css";
 import { PatientType, PatientTypeDisplay } from "@/@types/patient";
+import { Checkbox } from "@/components/ui/checkbox";
+import { Button } from "@/components/ui/button";
+import { ArrowUpDown } from "lucide-react";
+import { useState } from "react";
+import { Input } from "@/components/ui/input";
 
 interface User {
   series: any;
@@ -28,194 +46,248 @@ interface User {
   isActive: boolean;
 }
 
-// interface Response {
-//   count: number;
-//   data: User[];
-// }
-
-// const responseMock: Response = {
-//   count: 10,
-//   data: [
-//     {
-//       id: 25,
-//       name: "José Oliveira",
-//       email: "jose.oliveira@example.com",
-//       age: 33,
-//       phone: "+55 11 91234-5702",
-//       course: "ADMINISTRACAO",
-//       registration: "20211025",
-//       gender: "MALE",
-//       patientType: "GUARDIAN",
-//       createdAt: "2023-09-25T08:00:00.000Z",
-//       updatedAt: null,
-//       isActive: true,
-//     },
-//     {
-//       id: 24,
-//       name: "Mariana Farias",
-//       email: "mariana.farias@example.com",
-//       age: 26,
-//       phone: "+55 11 91234-5701",
-//       course: "QUIMICA",
-//       registration: "20211024",
-//       gender: "FEMALE",
-//       patientType: "CONTRACTOR",
-//       createdAt: "2023-09-24T08:00:00.000Z",
-//       updatedAt: null,
-//       isActive: true,
-//     },
-//     {
-//       id: 23,
-//       name: "Daniel Ramos",
-//       email: "daniel.ramos@example.com",
-//       age: 31,
-//       phone: "+55 11 91234-5700",
-//       course: "FISICA",
-//       registration: "20211023",
-//       gender: "MALE",
-//       patientType: "TEACHER",
-//       createdAt: "2023-09-23T08:00:00.000Z",
-//       updatedAt: null,
-//       isActive: true,
-//     },
-//     {
-//       id: 22,
-//       name: "Patricia Araújo",
-//       email: "patricia.araujo@example.com",
-//       age: 27,
-//       phone: "+55 11 91234-5699",
-//       course: "ADS",
-//       registration: "20211022",
-//       gender: "FEMALE",
-//       patientType: "STUDENT",
-//       createdAt: "2023-09-22T08:00:00.000Z",
-//       updatedAt: null,
-//       isActive: true,
-//     },
-//     {
-//       id: 21,
-//       name: "Eduardo Santos",
-//       email: "eduardo.santos@example.com",
-//       age: 21,
-//       phone: "+55 11 91234-5698",
-//       course: "ELETROTECNICA",
-//       registration: "20211021",
-//       gender: "MALE",
-//       patientType: "GUARDIAN",
-//       createdAt: "2023-09-21T08:00:00.000Z",
-//       updatedAt: null,
-//       isActive: true,
-//     },
-//     {
-//       id: 20,
-//       name: "Vanessa Pinto",
-//       email: "vanessa.pinto@example.com",
-//       age: 30,
-//       phone: "+55 11 91234-5697",
-//       course: "INFORMATICA",
-//       registration: "20211020",
-//       gender: "FEMALE",
-//       patientType: "CONTRACTOR",
-//       createdAt: "2023-09-20T08:00:00.000Z",
-//       updatedAt: null,
-//       isActive: true,
-//     },
-//     {
-//       id: 19,
-//       name: "Rodrigo Lopes",
-//       email: "rodrigo.lopes@example.com",
-//       age: 34,
-//       phone: "+55 11 91234-5696",
-//       course: "ADMINISTRACAO",
-//       registration: "20211019",
-//       gender: "MALE",
-//       patientType: "TEACHER",
-//       createdAt: "2023-09-19T08:00:00.000Z",
-//       updatedAt: null,
-//       isActive: true,
-//     },
-//     {
-//       id: 18,
-//       name: "Larissa Silva",
-//       email: "larissa.silva@example.com",
-//       age: 25,
-//       phone: "+55 11 91234-5695",
-//       course: "ELETROTECNICA",
-//       registration: "20211018",
-//       gender: "FEMALE",
-//       patientType: "STUDENT",
-//       createdAt: "2023-09-18T08:00:00.000Z",
-//       updatedAt: null,
-//       isActive: true,
-//     },
-//     {
-//       id: 17,
-//       name: "Thiago Costa",
-//       email: "thiago.costa@example.com",
-//       age: 27,
-//       phone: "+55 11 91234-5694",
-//       course: "QUIMICA",
-//       registration: "20211017",
-//       gender: "MALE",
-//       patientType: "CONTRACTOR",
-//       createdAt: "2023-09-17T08:00:00.000Z",
-//       updatedAt: null,
-//       isActive: true,
-//     },
-//     {
-//       id: 16,
-//       name: "Renata Melo",
-//       email: "renata.melo@example.com",
-//       age: 29,
-//       phone: "+55 11 91234-5693",
-//       course: "FISICA",
-//       registration: "20211016",
-//       gender: "FEMALE",
-//       patientType: "TEACHER",
-//       createdAt: "2023-09-16T08:00:00.000Z",
-//       updatedAt: null,
-//       isActive: true,
-//     },
-//   ],
-// };
-
 interface PatientProps {
-    data: User[];
-    count: number;
+  data: User[];
+  count: number;
 }
 
-export const Patient = ({data, count}: PatientProps) => {
+export const columns: ColumnDef<User>[] = [
+  {
+    id: "select",
+    header: ({ table }) => (
+      <Checkbox
+        checked={
+          table.getIsAllPageRowsSelected() ||
+          (table.getIsSomePageRowsSelected() && "indeterminate")
+        }
+        onCheckedChange={(value) => table.toggleAllPageRowsSelected(!!value)}
+        aria-label="Select all"
+      />
+    ),
+    cell: ({ row }) => (
+      <Checkbox
+        checked={row.getIsSelected()}
+        onCheckedChange={(value) => row.toggleSelected(!!value)}
+        aria-label="Select row"
+      />
+    ),
+    enableSorting: false,
+    enableHiding: false,
+  },
+  {
+    accessorKey: "name",
+    header: "Nome",
+    cell: ({ row }) => <div className="capitalize">{row.getValue("name")}</div>,
+  },
+  {
+    accessorKey: "registration",
+    header: ({ column }) => {
+      return (
+        <Button
+          variant="ghost"
+          className="h-12 p-0 text-left align-middle font-bold text-xl text-muted-foreground [&:has([role=checkbox])]:pr-0"
+          onClick={() => column.toggleSorting(column.getIsSorted() === "asc")}
+        >
+          Matrícula
+          <ArrowUpDown className="ml-2 h-4 w-4" />
+        </Button>
+      );
+    },
+    cell: ({ row }) => (
+      <div className="lowercase">{row.getValue("registration")}</div>
+    ),
+  },
+  {
+    accessorKey: "patientType",
+    header: "Função",
+    cell: ({ row }) => (
+      <div className="capitalize">{PatientTypeDisplay[row.getValue("patientType") as PatientType]}</div>
+    ),
+  },
+  {
+    accessorKey: "course",
+    header: "Curso",
+    cell: ({ row }) => (
+      <div className="capitalize">{row.getValue("course")}</div>
+    ),
+  },
+  {
+    accessorKey: "series",
+    header: "Série/Módulo",
+    cell: ({ row }) => (
+      <div className="capitalize">{row.getValue("series")}</div>
+    ),
+  },
+  {
+    accessorKey: "sessions",
+    header: "Sessões",
+    cell: ({ row }) => (
+      <div className="capitalize">{row.getValue("sessions")}</div>
+    ),
+  },
+  // {
+  //   accessorKey: "patientType",
+  //   header: () => <div className="text-right">Amount</div>,
+  //   cell: ({ row }) => {
+  //     const amount = parseFloat(row.getValue("patientType"))
+
+  //     // Format the amount as a dollar amount
+  //     const formatted = new Intl.NumberFormat("en-US", {
+  //       style: "currency",
+  //       currency: "USD",
+  //     }).format(amount)
+
+  //     return <div className="text-right font-medium">{formatted}</div>
+  //   },
+  // },
+  {
+    id: "actions",
+    enableHiding: false,
+    cell: ({ row }) => {
+      const payment = row.original;
+
+      return (
+        <>button</>
+      );
+    },
+  },
+];
+
+export const Patient = ({ data, count }: PatientProps) => {
+  const [sorting, setSorting] = useState<SortingState>([]);
+  const [columnFilters, setColumnFilters] = useState<ColumnFiltersState>([]);
+  const [columnVisibility, setColumnVisibility] = useState<VisibilityState>({});
+  const [rowSelection, setRowSelection] = useState({});
+
+  
+
+  const table = useReactTable({
+    data,
+    columns,
+    onSortingChange: setSorting,
+    onColumnFiltersChange: setColumnFilters,
+    getCoreRowModel: getCoreRowModel(),
+    getPaginationRowModel: getPaginationRowModel(),
+    getSortedRowModel: getSortedRowModel(),
+    getFilteredRowModel: getFilteredRowModel(),
+    onColumnVisibilityChange: setColumnVisibility,
+    onRowSelectionChange: setRowSelection,
+    state: {
+      sorting,
+      columnFilters,
+      columnVisibility,
+      rowSelection,
+    },
+  });
+
   return (
     <div className={styles.container}>
+      <div className={styles.filters}>
+        <Input
+          placeholder="Pesquisar paciente"
+          value={(table.getColumn("name")?.getFilterValue() as string) ?? ""}
+          onChange={(event) =>
+            table.getColumn("name")?.setFilterValue(event.target.value)
+          }
+          className="max-w-sm"
+        />
+      </div>
+
       <Table className="bg-white rounded-lg">
         {/* <TableCaption>A list of your recent patients.</TableCaption> */}
         <TableHeader>
-          <TableRow>
-            {/* className="w-[100px]" */}
+          {/* <TableRow>
             <TableHead>Nome</TableHead>
             <TableHead>Matrícula</TableHead>
             <TableHead>Função</TableHead>
-            {/* <TableHead className="text-right">Curso</TableHead> */}
             <TableHead>Curso</TableHead>
             <TableHead>Série/Módulo</TableHead>
             <TableHead>Sessões</TableHead>
-          </TableRow>
+          </TableRow> */}
+          {table.getHeaderGroups().map((headerGroup) => (
+            <TableRow key={headerGroup.id}>
+              {headerGroup.headers.map((header) => {
+                return (
+                  <TableHead key={header.id}>
+                    {header.isPlaceholder
+                      ? null
+                      : flexRender(
+                          header.column.columnDef.header,
+                          header.getContext()
+                        )}
+                  </TableHead>
+                );
+              })}
+            </TableRow>
+          ))}
         </TableHeader>
         <TableBody>
-          {data.map((item: User, index) => {
+          {/* {data.map((item: User, index) => {
             return (
-              <TableRow key={item.id} style={{}} className={`${(index + 1) % 2 == 0 ? 'bg-[#EFF1F3]' : ''}`}>
+              <TableRow
+                key={item.id}
+                style={{}}
+                className={`${(index + 1) % 2 == 0 ? "bg-[#EFF1F3]" : ""}`}
+              >
                 <TableCell>{item.name}</TableCell>
-                <TableCell>{item.registration ? item.registration : "----"}</TableCell>
+                <TableCell>
+                  {item.registration ? item.registration : "----"}
+                </TableCell>
                 <TableCell>{PatientTypeDisplay[item.patientType]}</TableCell>
                 <TableCell>{item.course ? item?.course : "----"}</TableCell>
                 <TableCell>{item?.series ? item?.series : "----"}</TableCell>
-                <TableCell>{item?.numberSessions ? item?.numberSessions : "----"}</TableCell>
+                <TableCell>
+                  {item?.numberSessions ? item?.numberSessions : "----"}
+                </TableCell>
               </TableRow>
             );
-          })}
+          })} */}
+          {table.getRowModel().rows?.length ? (
+            table.getRowModel().rows.map((row) => (
+              <TableRow
+                key={row.id}
+                data-state={row.getIsSelected() && "selected"}
+              >
+                {row.getVisibleCells().map((cell) => (
+                  <TableCell key={cell.id}>
+                    {flexRender(cell.column.columnDef.cell, cell.getContext())}
+                  </TableCell>
+                ))}
+              </TableRow>
+            ))
+          ) : (
+            <TableRow>
+              <TableCell colSpan={columns.length} className="h-24 text-center">
+                No results.
+              </TableCell>
+            </TableRow>
+          )}
         </TableBody>
       </Table>
+      <div className="flex items-center justify-end space-x-2 py-4">
+        <div className="flex-1 text-sm text-muted-foreground">
+          {table.getFilteredSelectedRowModel().rows.length} of{" "}
+          {table.getFilteredRowModel().rows.length} row(s) selected.
+        </div>
+        <div className="space-x-2">
+          <Button
+            variant="outline"
+            size="sm"
+            onClick={() => table.previousPage()}
+            disabled={!table.getCanPreviousPage()}
+          >
+            Anterior
+          </Button>
+          <Button
+            variant="outline"
+            size="sm"
+            onClick={() => table.nextPage()}
+            disabled={!table.getCanNextPage()}
+          >
+            Próxima
+          </Button>
+        </div>
+      </div>
     </div>
   );
 };
