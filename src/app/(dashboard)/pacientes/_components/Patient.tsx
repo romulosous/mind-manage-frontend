@@ -26,93 +26,7 @@ import { patientApi } from "@/services/patient";
 import { SearchPatient } from "@/@types";
 import Loading from "@/components/Loading";
 import { DataTable } from "@/components/data-table";
-
-interface User {
-  series: any;
-  numberSessions: any;
-  id: number;
-  name: string;
-  email: string;
-  age: number;
-  phone: string;
-  course: string;
-  registration: string;
-  gender: string;
-  patientType: PatientType;
-  createdAt: string;
-  updatedAt: string | null;
-  isActive: boolean;
-}
-
-export const columns: ColumnDef<IPatient>[] = [
-  {
-    accessorKey: "name",
-    header: "Nome",
-    cell: ({ row }) => <div className="capitalize">{row.getValue("name")}</div>,
-  },
-  {
-    accessorKey: "registration",
-    header: ({ column }) => {
-      return (
-        <Button
-          variant="ghost"
-          className="h-12 p-0 text-left align-middle font-bold text-xl text-muted-foreground [&:has([role=checkbox])]:pr-0"
-          onClick={() => column.toggleSorting(column.getIsSorted() === "asc")}
-        >
-          Matrícula
-          <ArrowUpDown className="ml-2 h-4 w-4" />
-        </Button>
-      );
-    },
-    cell: ({ row }) => (
-      <div className="lowercase">{row.getValue("registration") || "----"}</div>
-    ),
-  },
-  {
-    accessorKey: "patientType",
-    header: "Função",
-    cell: ({ row }) => (
-      <div className="capitalize">
-        {PatientTypeDisplay[row.getValue("patientType") as PatientType]}
-      </div>
-    ),
-  },
-  {
-    accessorKey: "course",
-    header: "Curso",
-    cell: ({ row }) => (
-      <div className="capitalize">{row.getValue("course") || "----"}</div>
-    ),
-  },
-  {
-    accessorKey: "series",
-    header: "Série/Módulo",
-    cell: ({ row }) => (
-      <div className="capitalize">{row.getValue("series") || "----"}</div>
-    ),
-  },
-  {
-    accessorKey: "sessions",
-    header: "Sessões",
-    cell: ({ row }) => (
-      <div className="capitalize">{row.getValue("sessions") || "----"}</div>
-    ),
-  },
-  {
-    id: "actions",
-    header: "Ações",
-    enableHiding: false,
-    cell: ({ row }) => {
-      const payment = row.original;
-
-      return (
-        <div className="flex gap-3">
-          <Button>Editar</Button>
-        </div>
-      );
-    },
-  },
-];
+import { useRouter } from "next/navigation";
 
 interface PatientResponse {
   data: [];
@@ -132,6 +46,7 @@ export interface IResponseMetaData {
 }
 
 export const Patient = () => {
+  const router = useRouter();
   const [page, setPage] = useState(0);
   const [perPage, setPerPage] = useState(10);
   const [query, setQuery] = useState("");
@@ -188,6 +103,80 @@ export const Patient = () => {
     // table.getState().pagination.pageSize,
     // table.getState().pagination.pageIndex,
   ]);
+
+  const columns: ColumnDef<IPatient>[] = [
+    {
+      accessorKey: "name",
+      header: "Nome",
+      cell: ({ row }) => <div className="capitalize">{row.getValue("name")}</div>,
+    },
+    {
+      accessorKey: "registration",
+      header: ({ column }) => {
+        return (
+          <Button
+            variant="ghost"
+            className="h-12 p-0 text-left align-middle font-bold text-xl text-muted-foreground [&:has([role=checkbox])]:pr-0"
+            onClick={() => column.toggleSorting(column.getIsSorted() === "asc")}
+          >
+            Matrícula
+            <ArrowUpDown className="ml-2 h-4 w-4" />
+          </Button>
+        );
+      },
+      cell: ({ row }) => (
+        <div className="lowercase">{row.getValue("registration") || "----"}</div>
+      ),
+    },
+    {
+      accessorKey: "patientType",
+      header: "Função",
+      cell: ({ row }) => (
+        <div className="capitalize">
+          {PatientTypeDisplay[row.getValue("patientType") as PatientType]}
+        </div>
+      ),
+    },
+    {
+      accessorKey: "course",
+      header: "Curso",
+      cell: ({ row }) => (
+        <div className="capitalize">{row.getValue("course") || "----"}</div>
+      ),
+    },
+    {
+      accessorKey: "series",
+      header: "Série/Módulo",
+      cell: ({ row }) => (
+        <div className="capitalize">{row.getValue("series") || "----"}</div>
+      ),
+    },
+    {
+      accessorKey: "sessions",
+      header: "Sessões",
+      cell: ({ row }) => (
+        <div className="capitalize">{row.getValue("sessions") || "----"}</div>
+      ),
+    },
+    {
+      id: "actions",
+      header: "Ações",
+      enableHiding: false,
+      cell: ({ row }) => {
+        const id = row.id;
+        console.log("id", id);
+  
+        return (
+          <div className="flex gap-3">
+            <Button onClick={() => {
+              router.push(`/pacientes/${id}`)
+            }}>visualizar</Button>
+          </div>
+        );
+      },
+    },
+  ];
+  
 
   const cousesOptions = Object.keys(CoursesDisplay).map((key) => ({
     value: key,

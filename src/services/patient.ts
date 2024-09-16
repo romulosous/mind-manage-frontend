@@ -13,14 +13,14 @@ export const patientApi = {
         return response
     },
     updatePatient: async (body: any) => {
-        const response = await API.post(`${baseUrl}`, body)
+        const response = await API.put(`${baseUrl}`, body)
         return response
     },
     deletePatient: async (id: string | number) => {
-        const response = await API.post(`${baseUrl}/${id}`)
+        const response = await API.delete(`${baseUrl}/${id}`)
         return response
     },
-    fetchPatientsById: async (id: string | number) => {
-        await API.post(`${baseUrl}/${id}`)
+    fetchPatientById: async (id: string | number) => {
+        await API.get(`${baseUrl}/${id}`)
     },
 }
