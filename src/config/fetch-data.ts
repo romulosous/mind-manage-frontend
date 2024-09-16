@@ -49,7 +49,7 @@ class FetchAPI {
 		} catch (error) {
 			if (error instanceof AuthError) {
 				const refreshResponse = (await this.refreshToken()) as { statusCode: number }
-				if (refreshResponse.statusCode === 401) {
+				if (refreshResponse.statusCode === 403) {
 					throw error
 				}
 				const response = await fetch(url, options)
@@ -64,7 +64,7 @@ class FetchAPI {
 	}
 
 	private async handleResponse(response: Response) {
-		if (response.status === 401) {
+		if (response.status === 403) {
 			throw new AuthError("UNAUTHORIZED")
 		}
 		if (!response.ok) {
@@ -83,7 +83,7 @@ class FetchAPI {
 
 	private async refreshToken() {
 		try {
-			const response = await fetch(this.baseURL + "/auth/refresh", {
+			const response = await fetch(this.baseURL + "/auth/refresh-token", {
 				method: "POST",
 				credentials: "include",
 				headers: { "Content-Type": "application/json" },
@@ -147,7 +147,7 @@ class AuthError extends Error {
 	constructor(message: string) {
 		super(message)
 		this.name = "AuthError"
-		this.statusCode = 401
+		this.statusCode = 403
 	}
 
 	toErrorResponse() {

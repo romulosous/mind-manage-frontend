@@ -4,7 +4,8 @@ const baseUrl = "/patient"
 
 export const patientApi = {
     fetchPatients: async (filters: any) => {
-        const response = await API.get(`${baseUrl}`, "default", filters)
+        const query = new URLSearchParams(filters).toString()
+        const response = await API.get(`${baseUrl}?${query}`)
         return response
     },
     createPatient: async (body: any) => {
