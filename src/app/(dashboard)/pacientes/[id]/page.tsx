@@ -1,3 +1,4 @@
+// "use client"
 import { patientApi } from "@/services/patient";
 
 interface PatientDetailsPageProps {
@@ -13,12 +14,12 @@ export default async function PatientDetailsPage({ params }: PatientDetailsPageP
       return null;
     }
 
-    const response = await patientApi.fetchPatientById(params.id);
-    console.log(response);
+    // const response = await patientApi.fetchPatientById(params.id);
+    // console.log(response);
 
-    if (response === null || response === undefined) {
-        return null
-    }
+    // if (response === null || response === undefined) {
+    //     return null
+    // }
 
 
 
@@ -26,7 +27,7 @@ export default async function PatientDetailsPage({ params }: PatientDetailsPageP
     <div>
       <h1>Patient Details</h1>
       {/* <PatientDetails patient={patient} /> */}
-      {response?.data?.name}
+      {/* {response?.data?.name} */}
     </div>
   );
 };
