@@ -84,7 +84,6 @@ export const Patient = () => {
 
       setData(dataWithMeta);
       // setCount(response.count);
-      console.log(response);
     } catch (error) {
       console.log(error);
     } finally {

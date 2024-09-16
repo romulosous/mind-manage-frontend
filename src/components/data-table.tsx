@@ -62,11 +62,11 @@ import { ChevronLeftIcon, ChevronRightIcon } from "lucide-react";
     setPage,
     setRowsPerPage,
   }: DataTableProps<TData, TValue>) {
-    console.log("pagesCount: ", pagesCount);
-    console.log("rowsPerPage: ", rowsPerPage);
-    console.log("currentPage: ", currentPage);
-    console.log("query: ", query);
-    console.log("createRowLink: ", createRowLink);
+    // console.log("pagesCount: ", pagesCount);
+    // console.log("rowsPerPage: ", rowsPerPage);
+    // console.log("currentPage: ", currentPage);
+    // console.log("query: ", query);
+    // console.log("createRowLink: ", createRowLink);
     const [sorting, setSorting] = React.useState<SortingState>([]);
     const [columnFilters, setColumnFilters] = React.useState<ColumnFiltersState>(
       [],

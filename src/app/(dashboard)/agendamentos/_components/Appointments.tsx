@@ -45,7 +45,7 @@ export const columns: ColumnDef<IAppointments>[] = [
     ),
   },
   {
-    accessorKey: "appointmentDate",
+    accessorKey: "appointmentDate.Hour",
     header: ({ column }) => {
       return (
         <Button
@@ -59,7 +59,8 @@ export const columns: ColumnDef<IAppointments>[] = [
       );
     },
     cell: ({ row }) => {
-      const startTime = new Date(row.getValue("appointmentDate"));
+      const hour = row.original.appointmentDate;
+      const startTime = hour ? new Date(hour) : new Date(); // Fallback to current date if hour is null
       const endTime = new Date(startTime);
       endTime.setHours(endTime.getHours() + 1);
 
@@ -184,7 +185,6 @@ export const Appointments = () => {
       };
 
       setData(dataWithMeta);
-      console.log(response);
     } catch (error) {
       console.log(error);
     } finally {
