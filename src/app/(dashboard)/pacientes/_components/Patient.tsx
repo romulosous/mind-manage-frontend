@@ -1,25 +1,5 @@
 import {
-  Table,
-  TableBody,
-  TableCaption,
-  TableCell,
-  TableHead,
-  TableHeader,
-  TableRow,
-} from "@/components/ui/table";
-
-import {
-  ColumnDef,
-  ColumnFiltersState,
-  SortingState,
-  VisibilityState,
-  flexRender,
-  getCoreRowModel,
-  getFilteredRowModel,
-  getPaginationRowModel,
-  getSortedRowModel,
-  useReactTable,
-} from "@tanstack/react-table";
+  ColumnDef} from "@tanstack/react-table";
 
 import styles from "./Patient.module.css";
 import {
@@ -27,10 +7,10 @@ import {
   CoursesDisplay,
   Education,
   EducationDisplay,
+  Patient as IPatient,
   PatientType,
   PatientTypeDisplay,
 } from "@/@types/patient";
-import { Checkbox } from "@/components/ui/checkbox";
 import { Button } from "@/components/ui/button";
 import { ArrowUpDown, SearchIcon } from "lucide-react";
 import { useEffect, useState } from "react";
@@ -45,7 +25,7 @@ import {
 import { patientApi } from "@/services/patient";
 import { SearchPatient } from "@/@types";
 import Loading from "@/components/Loading";
-import { DataTablePagination } from "@/components/data-table-pagination";
+import { DataTable } from "@/components/data-table";
 
 interface User {
   series: any;
@@ -64,12 +44,7 @@ interface User {
   isActive: boolean;
 }
 
-interface PatientProps {
-  data: User[];
-  count: number;
-}
-
-export const columns: ColumnDef<User>[] = [
+export const columns: ColumnDef<IPatient>[] = [
   {
     accessorKey: "name",
     header: "Nome",
@@ -144,41 +119,29 @@ interface PatientResponse {
   count: number;
 }
 
-export const Patient = () => {
-  const [sorting, setSorting] = useState<SortingState>([]);
-  const [columnFilters, setColumnFilters] = useState<ColumnFiltersState>([]);
-  const [columnVisibility, setColumnVisibility] = useState<VisibilityState>({});
-  const [rowSelection, setRowSelection] = useState({});
+export interface IResponse<T> {
+  data: T[];
+  meta: IResponseMetaData;
+}
 
-  const [data, setData] = useState([]);
-  const [count, setCount] = useState(0);
+export interface IResponseMetaData {
+  page: number;
+  perPage: 10 | 20 | 30 | 40 | 50;
+  total: number;
+  totalPages: number;
+}
+
+export const Patient = () => {
+  const [page, setPage] = useState(0);
+  const [perPage, setPerPage] = useState(10);
+  const [query, setQuery] = useState("");
+
+  const [data, setData] = useState<IResponse<IPatient>>();
   const [loading, setLoading] = useState(true);
 
   const [filters, setFilters] = useState<SearchPatient>({
     limit: 10,
   });
-
-  const table = useReactTable({
-    data,
-    columns,
-    onSortingChange: setSorting,
-    onColumnFiltersChange: setColumnFilters,
-    getCoreRowModel: getCoreRowModel(),
-    getPaginationRowModel: getPaginationRowModel(),
-    getSortedRowModel: getSortedRowModel(),
-    getFilteredRowModel: getFilteredRowModel(),
-    onColumnVisibilityChange: setColumnVisibility,
-    onRowSelectionChange: setRowSelection,
-    state: {
-      sorting,
-      columnFilters,
-      columnVisibility,
-      rowSelection,
-    },
-  });
-
-  console.log("table", table.getState())
-
 
   const onSearch = async (value: string) => {
     setFilters({ ...filters, name: value });
@@ -193,8 +156,19 @@ export const Patient = () => {
       const response = (await patientApi.fetchPatients(
         params
       )) as PatientResponse;
-      setData(response.data);
-      setCount(response.count);
+
+      const dataWithMeta: IResponse<IPatient> = {
+        data: response.data,
+        meta: {
+          page: 0,
+          perPage: params.limit as 10 | 20 | 30 | 40 | 50 || 10,
+          total: response.count,
+          totalPages: Math.ceil(response.count / (params.limit || 10)),
+        },
+      };
+
+      setData(dataWithMeta);
+      // setCount(response.count);
       console.log(response);
     } catch (error) {
       console.log(error);
@@ -204,10 +178,16 @@ export const Patient = () => {
   };
 
   useEffect(() => {
-    fetchPatients({...filters, limit: table.getState().pagination.pageSize, offset: table.getState().pagination.pageIndex});
-  }, [filters, table.getState().pagination.pageSize, table.getState().pagination.pageIndex]);
-
-
+    fetchPatients({
+      ...filters, limit: perPage, offset: page
+      // limit: table.getState().pagination.pageSize,
+      // offset: table.getState().pagination.pageIndex,
+    });
+  }, [
+    filters, page, perPage, query
+    // table.getState().pagination.pageSize,
+    // table.getState().pagination.pageIndex,
+  ]);
 
   const cousesOptions = Object.keys(CoursesDisplay).map((key) => ({
     value: key,
@@ -248,7 +228,7 @@ export const Patient = () => {
   }));
 
   if (loading) {
-    return <Loading />
+    return <Loading />;
   }
 
   return (
@@ -318,93 +298,30 @@ export const Patient = () => {
         </div>
       </div>
 
-      <Table className="bg-white rounded-lg">
-        <TableHeader>
-          {table.getHeaderGroups().map((headerGroup) => (
-            <TableRow key={headerGroup.id}>
-              {headerGroup.headers.map((header) => {
-                return (
-                  <TableHead key={header.id}>
-                    {header.isPlaceholder
-                      ? null
-                      : flexRender(
-                          header.column.columnDef.header,
-                          header.getContext()
-                        )}
-                  </TableHead>
-                );
-              })}
-            </TableRow>
-          ))}
-        </TableHeader>
-        <TableBody>
-          {/* {data.map((item: User, index) => {
-            return (
-              <TableRow
-                key={item.id}
-                style={{}}
-                className={`${(index + 1) % 2 == 0 ? "bg-[#EFF1F3]" : ""}`}
-              >
-                <TableCell>{item.name}</TableCell>
-                <TableCell>
-                  {item.registration ? item.registration : "----"}
-                </TableCell>
-                <TableCell>{PatientTypeDisplay[item.patientType]}</TableCell>
-                <TableCell>{item.course ? item?.course : "----"}</TableCell>
-                <TableCell>{item?.series ? item?.series : "----"}</TableCell>
-                <TableCell>
-                  {item?.numberSessions ? item?.numberSessions : "----"}
-                </TableCell>
-              </TableRow>
-            );
-          })} */}
-          {table.getRowModel().rows?.length ? (
-            table.getRowModel().rows.map((row, index) => (
-              <TableRow
-                key={row.id}
-                className={`${(index + 1) % 2 == 0 ? "bg-[#EFF1F3]" : ""}`}
-                data-state={row.getIsSelected() && "selected"}
-              >
-                {row.getVisibleCells().map((cell) => (
-                  <TableCell key={cell.id}>
-                    {flexRender(cell.column.columnDef.cell, cell.getContext())}
-                  </TableCell>
-                ))}
-              </TableRow>
-            ))
-          ) : (
-            <TableRow>
-              <TableCell colSpan={columns.length} className="h-24 text-center">
-                No results.
-              </TableCell>
-            </TableRow>
-          )}
-        </TableBody>
-      </Table>
-      <div className="flex items-center justify-end space-x-2 py-4">
-        <div className="flex-1 text-sm text-muted-foreground">
-          {table.getFilteredSelectedRowModel().rows.length} of{" "}
-          {table.getFilteredRowModel().rows.length} row(s) selected.
-        </div>
-        <div className="space-x-2">
-          <Button
-            variant="outline"
-            size="sm"
-            onClick={() => table.previousPage()}
-            disabled={!table.getCanPreviousPage()}
-          >
-            Anterior
-          </Button>
-          <Button
-            variant="outline"
-            size="sm"
-            onClick={() => table.nextPage()}
-            disabled={!table.getCanNextPage()}
-          >
-            Próxima
-          </Button>
-        </div>
-        {/* <DataTablePagination table={table} /> */}
+      <div>
+        {data ? (
+          <DataTable
+            data={data.data}
+            columns={columns}
+            pagesCount={data.meta.totalPages}
+            rowsPerPage={data.meta.perPage}
+            setRowsPerPage={setPerPage}
+            query={query}
+            title="Users Table"
+            totalRows={data.meta.total}
+            hiddenColumns={{
+              phoneNumber: false,
+              address: false,
+              createdAt: false,
+              updatedAt: false,
+            }}
+            setQuery={setQuery}
+            currentPage={data.meta.page}
+            setPage={setPage}
+          />
+        ) : (
+          "loading"
+        )}
       </div>
     </div>
   );
