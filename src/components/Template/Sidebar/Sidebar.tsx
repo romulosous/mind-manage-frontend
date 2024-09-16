@@ -117,7 +117,7 @@ const Sidebar = ({ isOpen, onClick, isDesktop }: SidebarProps) => {
                 <NavItem
                   title="Sessões/Eventos"
                   onClick={!isDesktop ? onClick : undefined}
-                  url="/sessoes"
+                  url="/agendamentos"
                   icon={
                     <svg
                       width="30"

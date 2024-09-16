@@ -1,4 +1,4 @@
-import { Patient } from "./patient";
+import { attachment, Courses, Education, Gender, Patient, PatientType } from "./patient";
 import { Psychologist } from "./psychologist";
 
 export interface Appointment {
@@ -16,7 +16,7 @@ export interface Appointment {
     createdAt: Date;
     updatedAt: Date | null;
     Psychologist: Psychologist;
-    Patient: Patient | null;
+    Patient?: Patient | null;
     EmailSchedule: EmailSchedule[];
 }
 
@@ -90,3 +90,29 @@ export interface EmailSchedule {
     createdAt: Date;
     updatedAt: Date | null;
 }
+
+export type FilterAppointment = {
+    type?: typeAppointment
+    status?: Status
+    appointmentDate?: Date
+    typeAcctivity?: typeAcctivity
+    patientId?: number
+    psychologistId?: number
+    name?: string
+    createdAt?: Date
+    offset?: number
+    limit?: number
+    psychologistName?: string
+    gender?: Gender
+    minAge?: number
+    maxAge?: number
+    minDate?: Date
+    maxDate?: Date
+    course?: Courses
+    education?: Education
+    isActive?: boolean
+    attachment?: attachment
+    patientType?: PatientType
+}
+
+export type SearchAppointment = FilterAppointment
