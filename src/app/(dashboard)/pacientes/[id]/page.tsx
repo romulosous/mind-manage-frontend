@@ -1,5 +1,8 @@
-// "use client"
+"use client";
+import { Patient as IPatient } from "@/@types/patient";
+import Loading from "@/components/Loading";
 import { patientApi } from "@/services/patient";
+import { useEffect, useState } from "react";
 
 interface PatientDetailsPageProps {
   params: {
@@ -7,27 +10,41 @@ interface PatientDetailsPageProps {
   };
 }
 
-export default async function PatientDetailsPage({ params }: PatientDetailsPageProps){
-  // const [patient] = useQuery(getPatient, { id: params.id }, { retryOnMount: true });
-  if (!params.id) {
-      // TODO: redirecionar para home page
-      return null;
+export default function PatientDetailsPage({
+  params,
+}: PatientDetailsPageProps) {
+  const [data, setData] = useState<IPatient>();
+  const [loading, setLoading] = useState(true);
+
+  const fetchPatientById = async () => {
+    try {
+      if (!params.id) return;
+      const response = (await patientApi.fetchPatientById(
+        params.id
+      )) as unknown as IPatient;
+      console.log("response: ", response);
+      setData(response);
+    } catch (error) {
+      console.log(error);
+    } finally {
+      setLoading(false);
     }
+  };
 
-    // const response = await patientApi.fetchPatientById(params.id);
-    // console.log(response);
+  if (!params.id) {
+    return null;
+  }
 
-    // if (response === null || response === undefined) {
-    //     return null
-    // }
+  useEffect(() => {
+    fetchPatientById();
+  }, [params.id]);
 
-
-
+  if(loading) {
+    return <Loading />
+  }
   return (
     <div>
-      <h1>Patient Details</h1>
-      {/* <PatientDetails patient={patient} /> */}
-      {/* {response?.data?.name} */}
+      <h2>{data?.name}</h2>
     </div>
   );
-};
+}

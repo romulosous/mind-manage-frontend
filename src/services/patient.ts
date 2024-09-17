@@ -21,6 +21,7 @@ export const patientApi = {
         return response
     },
     fetchPatientById: async (id: string | number) => {
-        await API.get(`${baseUrl}/${id}`)
+        const response = await API.get(`${baseUrl}/${id}`)
+        return response
     },
 }

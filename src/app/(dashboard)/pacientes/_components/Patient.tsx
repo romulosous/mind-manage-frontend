@@ -35,10 +35,6 @@ interface PatientResponse {
   count: number;
 }
 
-export interface IResponse<T> {
-  data: T[];
-  meta: IResponseMetaData;
-}
 
 export interface IResponseMetaData {
   page: number;
