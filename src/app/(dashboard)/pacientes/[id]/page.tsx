@@ -4,6 +4,8 @@ import Loading from "@/components/Loading";
 import { patientApi } from "@/services/patient";
 import { useEffect, useState } from "react";
 
+import PatientDetails from "./_components/patientDetails";
+
 interface PatientDetailsPageProps {
   params: {
     id?: string;
@@ -35,16 +37,14 @@ export default function PatientDetailsPage({
     return null;
   }
 
-  useEffect(() => {
-    fetchPatientById();
-  }, [params.id]);
+  // useEffect(() => {
+  //   fetchPatientById();
+  // }, [params.id]);
 
-  if(loading) {
-    return <Loading />
-  }
+  // if(loading) {
+  //   return <Loading />
+  // }
   return (
-    <div>
-      <h2>{data?.name}</h2>
-    </div>
+    <PatientDetails />
   );
 }

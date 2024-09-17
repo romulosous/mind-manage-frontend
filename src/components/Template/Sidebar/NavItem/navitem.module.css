@@ -16,6 +16,10 @@
 	gap: 6px;
 }
 
+.primaryBorder {
+	border-bottom: 1px solid var(--primary)
+}
+
 .activeLink {
 	background:  var(--primary);
 	display: flex;
@@ -33,4 +37,8 @@
 	text-overflow: ellipsis;
 	white-space: nowrap;
 	user-select: none;
+}
+
+.primary {
+	color: var(--primary);
 }

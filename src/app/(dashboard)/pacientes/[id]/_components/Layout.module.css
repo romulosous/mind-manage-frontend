@@ -1,0 +1,55 @@
+.container {
+	/* display: flex; */
+	background-color: var(--secondary);
+}
+
+.layoutWrapper {
+	display: flex;
+	height: 100%;
+    padding: 20px;
+    gap: 20px;
+}
+
+.content {
+	min-width: var(--small-device);
+	height: 100%;
+	display: flex;
+	flex-direction: column;
+	flex: 1;
+}
+
+.wrapper {
+    background-color: #FFFFFF !important;
+    border-radius: 10px;
+}
+
+.sidebar {
+	position: fixed;
+	opacity: 0;
+	background-color: var(--gray-950);
+	display: flex;
+	width: 100%;
+	height: 100%;
+	z-index: var(--layer-base);
+	pointer-events: auto;
+	cursor: pointer;
+	animation: sidebar ease 1 normal forwards;
+}
+
+@media (min-width: 320px) {
+	.sidebar {
+		position: fixed;
+		background-color: #000;
+		display: flex;
+		width: 100%;
+		height: 100%;
+		z-index: var(--layer-base);
+		cursor: pointer;
+	}
+}
+
+@media (min-width: 960px) {
+	.sidebar {
+		display: none;
+	}
+}
