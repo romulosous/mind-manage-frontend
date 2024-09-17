@@ -1,6 +1,5 @@
 import { ColumnDef } from "@tanstack/react-table";
-
-import { format } from "date-fns";
+import {format } from "date-fns";
 
 import styles from "./Appointments.module.css";
 import {
@@ -11,8 +10,19 @@ import {
   typeAppointmentDisplay,
 } from "@/@types/agendamentos";
 import { Button } from "@/components/ui/button";
-import { ArrowUpDown, SearchIcon } from "lucide-react";
-import { useEffect, useState } from "react";
+import { Calendar } from "@/components/ui/calendar";
+import {
+  Popover,
+  PopoverContent,
+  PopoverTrigger,
+} from "@/components/ui/popover";
+import {
+  ArrowUpDown,
+  SearchIcon,
+  Calendar as CalendarIcon,
+} from "lucide-react";
+
+import { SetStateAction, useEffect, useState } from "react";
 import { Input } from "@/components/ui/input";
 import {
   Select,
@@ -27,6 +37,8 @@ import Loading from "@/components/Loading";
 import { DataTable } from "@/components/data-table";
 import { PatientType, PatientTypeDisplay } from "@/@types/patient";
 import { ptBR } from "date-fns/locale";
+import { cn } from "@/lib/utils";
+import { DateRange } from "react-day-picker";
 
 export const columns: ColumnDef<IAppointments>[] = [
   {
@@ -63,9 +75,11 @@ export const columns: ColumnDef<IAppointments>[] = [
       const formattedStartTime = format(startTime, "kk:mm");
       const formattedEndTime = format(endTime, "kk:mm");
 
-      return <div className="capitalize">
-        {formattedStartTime} - {formattedEndTime}
-      </div>;
+      return (
+        <div className="capitalize">
+          {formattedStartTime} - {formattedEndTime}
+        </div>
+      );
     },
   },
   {
@@ -90,7 +104,7 @@ export const columns: ColumnDef<IAppointments>[] = [
     accessorKey: "name",
     header: "Nome",
     cell: ({ row }) => {
-      return <div className="capitalize">{row.getValue("name") || "----"}</div>
+      return <div className="capitalize">{row.getValue("name") || "----"}</div>;
     },
   },
   {
@@ -151,6 +165,10 @@ export const Appointments = () => {
   const [count, setCount] = useState(0);
 
   const [data, setData] = useState<IAppointments[]>([]);
+  const [date, setDate] = useState<DateRange | undefined>({
+    from: new Date(),
+    to: new Date(),
+  })
   const [loading, setLoading] = useState(true);
 
   const [filters, setFilters] = useState<FilterAppointment>({
@@ -202,6 +220,20 @@ export const Appointments = () => {
     label: StatusDisplay[key as Status],
   }));
 
+  const handleDateChange = (newDate: DateRange | undefined) => {
+    setDate(newDate);
+
+    console.log(newDate);
+
+    if (newDate?.from && newDate?.to) {
+      setFilters({
+        ...filters,
+        minDate: newDate.from,
+        maxDate: newDate.to,
+      });
+    }
+  };
+
   if (loading) {
     return <Loading />;
   }
@@ -209,6 +241,44 @@ export const Appointments = () => {
   return (
     <div className={styles.container}>
       <div className={styles.filters}>
+        <div className={cn("grid gap-2")}>
+          <Popover>
+            <PopoverTrigger asChild>
+              <Button
+                id="date"
+                variant={"outline"}
+                className={cn(
+                  "w-[300px] justify-start text-left font-normal",
+                  !date && "text-muted-foreground"
+                )}
+              >
+                <CalendarIcon className="mr-2 h-4 w-4" />
+                {date?.from ? (
+                  date.to ? (
+                    <>
+                      {format(date.from, "LLL dd, y")} -{" "}
+                      {format(date.to, "LLL dd, y")}
+                    </>
+                  ) : (
+                    format(date.from, "LLL dd, y")
+                  )
+                ) : (
+                  <span>Pick a date</span>
+                )}
+              </Button>
+            </PopoverTrigger>
+            <PopoverContent className="w-auto p-0" align="start">
+              <Calendar
+                initialFocus
+                mode="range"
+                defaultMonth={date?.from}
+                selected={date}
+                onSelect={handleDateChange}
+                numberOfMonths={2}
+              />
+            </PopoverContent>
+          </Popover>
+        </div>
         <Select onValueChange={(value) => onValueChange(value, "type")}>
           <SelectTrigger className="w-[180px]">
             <SelectValue placeholder="Tipo" />
@@ -234,13 +304,10 @@ export const Appointments = () => {
             ))}
           </SelectContent>
         </Select>
-      
         <div className="relative flex-1">
           <Input
             placeholder="Pesquisar nome registro"
-            onChange={(event) =>
-              onSearch(event.target.value, "name")
-            }
+            onChange={(event) => onSearch(event.target.value, "name")}
             className="pr-6"
           />
           <SearchIcon size={16} className="absolute right-2 top-3" />
@@ -249,9 +316,7 @@ export const Appointments = () => {
         <div className="relative flex-1">
           <Input
             placeholder="Pesquisar nome paciente"
-            onChange={(event) =>
-              onSearch(event.target.value, "patientName")
-            }
+            onChange={(event) => onSearch(event.target.value, "patientName")}
             className="pr-6"
           />
           <SearchIcon size={14} className="absolute right-2 top-3" />
