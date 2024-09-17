@@ -32,10 +32,6 @@ export const columns: ColumnDef<IAppointments>[] = [
   {
     accessorKey: "appointmentDate",
     header: "Data",
-    // {format(booking.date, "MMMM", { locale: ptBR })}
-    // cell: ({ row }) => (
-    //   <div className="capitalize">{row.getValue("appointmentDate")}</div>
-    // ),
     cell: ({ row }) => (
       <div className="capitalize">
         {format(row.getValue("appointmentDate"), "dd/MM/yyyy", {
@@ -131,6 +127,8 @@ export const columns: ColumnDef<IAppointments>[] = [
 
 interface AppointmentsResponse {
   data: [];
+  currentPage: number;
+  totalPages: number;
   count: number;
 }
 
@@ -147,11 +145,12 @@ export interface IResponseMetaData {
 }
 
 export const Appointments = () => {
-  const [page, setPage] = useState(0);
-  const [perPage, setPerPage] = useState(10);
-  const [query, setQuery] = useState("");
+  const [perPage, setPerPage] = useState<10 | 20 | 30 | 40 | 50>(10);
+  const [currentPage, setCurrentPage] = useState(1);
+  const [totalPages, setTotalPages] = useState(0);
+  const [count, setCount] = useState(0);
 
-  const [data, setData] = useState<IResponse<IAppointments>>();
+  const [data, setData] = useState<IAppointments[]>([]);
   const [loading, setLoading] = useState(true);
 
   const [filters, setFilters] = useState<FilterAppointment>({
@@ -173,18 +172,9 @@ export const Appointments = () => {
       const response = (await AppointmentApi.fetchAppointments(
         params
       )) as AppointmentsResponse;
-
-      const dataWithMeta: IResponse<IAppointments> = {
-        data: response.data,
-        meta: {
-          page: 0,
-          perPage: (params.limit as 10 | 20 | 30 | 40 | 50) || 10,
-          total: response.count,
-          totalPages: Math.ceil(response.count / (params.limit || 10)),
-        },
-      };
-
-      setData(dataWithMeta);
+      setData(response.data);
+      setTotalPages(response.totalPages);
+      setCount(response.count);
     } catch (error) {
       console.log(error);
     } finally {
@@ -196,9 +186,9 @@ export const Appointments = () => {
     fetchAppointments({
       ...filters,
       limit: perPage,
-      offset: page,
+      page: currentPage,
     });
-  }, [filters, page, perPage, query]);
+  }, [filters, perPage, currentPage]);
 
   const AppointmentsTypeOptions = Object.keys(typeAppointmentDisplay).map(
     (key) => ({
@@ -277,23 +267,20 @@ export const Appointments = () => {
       <div>
         {data ? (
           <DataTable
-            data={data.data}
+            data={data}
             columns={columns}
-            pagesCount={data.meta.totalPages}
-            rowsPerPage={data.meta.perPage}
+            pagesCount={totalPages}
+            rowsPerPage={perPage}
             setRowsPerPage={setPerPage}
-            query={query}
-            title="Users Table"
-            totalRows={data.meta.total}
+            setCurrentPage={setCurrentPage}
+            totalRows={count}
             hiddenColumns={{
               phoneNumber: false,
               address: false,
               createdAt: false,
               updatedAt: false,
             }}
-            setQuery={setQuery}
-            currentPage={data.meta.page}
-            setPage={setPage}
+            currentPage={currentPage}
           />
         ) : (
           "loading"

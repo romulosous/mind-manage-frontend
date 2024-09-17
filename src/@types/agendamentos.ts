@@ -100,7 +100,7 @@ export type FilterAppointment = {
     psychologistId?: number
     name?: string
     createdAt?: Date
-    offset?: number
+    // offset?: number
     limit?: number
     psychologistName?: string
     gender?: Gender
@@ -113,6 +113,7 @@ export type FilterAppointment = {
     isActive?: boolean
     attachment?: attachment
     patientType?: PatientType
+    page?: number
 }
 
 export type SearchAppointment = FilterAppointment

@@ -23,13 +23,15 @@ import {
   SelectValue,
 } from "@/components/ui/select";
 import { patientApi } from "@/services/patient";
-import { SearchPatient } from "@/@types";
+import { SearchPatient } from "@/@types/patient";
 import Loading from "@/components/Loading";
 import { DataTable } from "@/components/data-table";
 import { useRouter } from "next/navigation";
 
 interface PatientResponse {
   data: [];
+  currentPage: number;
+  totalPages: number;
   count: number;
 }
 
@@ -46,12 +48,12 @@ export interface IResponseMetaData {
 }
 
 export const Patient = () => {
-  const router = useRouter();
-  const [page, setPage] = useState(0);
-  const [perPage, setPerPage] = useState(10);
-  const [query, setQuery] = useState("");
+  const [perPage, setPerPage] = useState<10 | 20 | 30 | 40 | 50>(10);
+  const [currentPage, setCurrentPage] = useState(1);
+  const [totalPages, setTotalPages] = useState(0);
+  const [count, setCount] = useState(0);
 
-  const [data, setData] = useState<IResponse<IPatient>>();
+  const [data, setData] = useState<IPatient[]>([]);
   const [loading, setLoading] = useState(true);
 
   const [filters, setFilters] = useState<SearchPatient>({
@@ -72,18 +74,9 @@ export const Patient = () => {
         params
       )) as PatientResponse;
 
-      const dataWithMeta: IResponse<IPatient> = {
-        data: response.data,
-        meta: {
-          page: 0,
-          perPage: params.limit as 10 | 20 | 30 | 40 | 50 || 10,
-          total: response.count,
-          totalPages: Math.ceil(response.count / (params.limit || 10)),
-        },
-      };
-
-      setData(dataWithMeta);
-      // setCount(response.count);
+      setData(response.data);
+      setTotalPages(response.totalPages);
+      setCount(response.count);
     } catch (error) {
       console.log(error);
     } finally {
@@ -93,14 +86,10 @@ export const Patient = () => {
 
   useEffect(() => {
     fetchPatients({
-      ...filters, limit: perPage, offset: page
-      // limit: table.getState().pagination.pageSize,
-      // offset: table.getState().pagination.pageIndex,
+      ...filters, limit: perPage, page: currentPage
     });
   }, [
-    filters, page, perPage, query
-    // table.getState().pagination.pageSize,
-    // table.getState().pagination.pageIndex,
+    filters, perPage, currentPage
   ]);
 
   const columns: ColumnDef<IPatient>[] = [
@@ -168,7 +157,7 @@ export const Patient = () => {
         return (
           <div className="flex gap-3">
             <Button onClick={() => {
-              router.push(`/pacientes/${id}`)
+              // router.push(`/pacientes/${id}`)
             }}>visualizar</Button>
           </div>
         );
@@ -289,23 +278,20 @@ export const Patient = () => {
       <div>
         {data ? (
           <DataTable
-            data={data.data}
+            data={data}
             columns={columns}
-            pagesCount={data.meta.totalPages}
-            rowsPerPage={data.meta.perPage}
+            pagesCount={totalPages}
+            rowsPerPage={perPage}
             setRowsPerPage={setPerPage}
-            query={query}
-            title="Users Table"
-            totalRows={data.meta.total}
+            setCurrentPage={setCurrentPage}
+            currentPage={currentPage}
+            totalRows={count}
             hiddenColumns={{
               phoneNumber: false,
               address: false,
               createdAt: false,
               updatedAt: false,
             }}
-            setQuery={setQuery}
-            currentPage={data.meta.page}
-            setPage={setPage}
           />
         ) : (
           "loading"
