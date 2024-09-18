@@ -12,7 +12,7 @@ import {
   PatientTypeDisplay,
 } from "@/@types/patient";
 import { Button } from "@/components/ui/button";
-import { ArrowUpDown, SearchIcon } from "lucide-react";
+import { ArrowUpDown, SearchIcon, EyeIcon } from "lucide-react";
 import { useEffect, useState } from "react";
 import { Input } from "@/components/ui/input";
 import {
@@ -44,6 +44,7 @@ export interface IResponseMetaData {
 }
 
 export const Patient = () => {
+  const router = useRouter();
   const [perPage, setPerPage] = useState<10 | 20 | 30 | 40 | 50>(10);
   const [currentPage, setCurrentPage] = useState(1);
   const [totalPages, setTotalPages] = useState(0);
@@ -152,9 +153,9 @@ export const Patient = () => {
   
         return (
           <div className="flex gap-3">
-            <Button onClick={() => {
-              // router.push(`/pacientes/${id}`)
-            }}>visualizar</Button>
+            <Button title="Detalhes" onClick={() => {
+              router.push(`/pacientes/${id}`)
+            }}><EyeIcon /></Button>
           </div>
         );
       },

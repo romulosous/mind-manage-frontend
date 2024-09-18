@@ -16,14 +16,16 @@ export type NavItemProps = {
 }
 const NavItem = ({ title, icon, onClick, url = "", isOpenMenu, className = "", primary }: NavItemProps) => {
 	const pathname = usePathname()
+	const isLastItem = title === "Config" // primary
+	const isActive = pathname.startsWith(url);
 	return (
 		<Link
 			title={title}
 			onClick={onClick}
 			href={url}
-			className={`flex align-items-center cursor-pointer no-underline ${styles.item} ${primary ? styles.primaryBorder : ""} ${className}`}
+			className={`flex align-items-center cursor-pointer no-underline ${styles.item} ${primary ? styles.primaryBorder : ""} ${className} ${primary && isLastItem ? styles.lastItem : ""}`}
 		>
-			<div className={`${styles.iconContainer} ${url === pathname ? styles.activeLink : ""}`}>
+			<div className={`${styles.iconContainer} ${isActive ? styles.activeLink : ""}`}>
 			{icon}
 			</div>
 			{isOpenMenu ? <span className={`${styles.title} ${primary ? styles.primary : ""}`}>{title}</span> : <></>}

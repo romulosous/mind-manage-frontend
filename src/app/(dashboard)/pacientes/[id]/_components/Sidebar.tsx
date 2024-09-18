@@ -17,7 +17,6 @@ export default function PatientSidebar() {
                 url={`/pacientes/${params.id}/info`}
                 primary
                 isOpenMenu={true}
-                className={styles.item}
                 icon={
                   <svg
                     width="40"

@@ -20,6 +20,10 @@
 	border-bottom: 1px solid var(--primary)
 }
 
+.lastItem {
+	border-bottom: none;
+}
+
 .activeLink {
 	background:  var(--primary);
 	display: flex;
