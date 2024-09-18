@@ -1,4 +1,5 @@
 import Layout from "../_components/Layout";
+import { ProfileForm } from "./_components/profileForm";
 
 interface PatientDetailsPageProps {
   params: {
@@ -13,7 +14,10 @@ export default function PatientInfoPage({ params }: PatientDetailsPageProps) {
 
   return (
     <Layout>
-      <h1>Info</h1>
+      <div>
+      <h1>Informações pessoais</h1>
+      <ProfileForm />
+      </div>
     </Layout>
   );
 }

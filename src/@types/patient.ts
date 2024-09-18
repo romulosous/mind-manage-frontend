@@ -57,18 +57,18 @@ export enum Difficulty {
     TDAH = 'TDAH',
     COMUNICATION = 'COMUNICATION',
     RELATIONSHIP = 'RELATIONSHIP',
-    OTHER = 'OTHER',
+    // OTHER = 'OTHER',
 }
 
 export const DifficultyDisplay: { [key in Difficulty]: string } = {
     [Difficulty.AVALIATION]: "Avaliação",
-    [Difficulty.ORGANIZATION_ON_STUDIES]: "Organização nos estudos",
     [Difficulty.CONCENTRATION]: "Concentração",
-    [Difficulty.MEMORY]: "Memória",
+    [Difficulty.ORGANIZATION_ON_STUDIES]: "Organização nos estudos",
     [Difficulty.TDAH]: "TDAH",
+    [Difficulty.MEMORY]: "Memória",
     [Difficulty.COMUNICATION]: "Comunicação",
     [Difficulty.RELATIONSHIP]: "Relacionamento",
-    [Difficulty.OTHER]: "Outros",
+    // [Difficulty.OTHER]: "Outros",
 }
 
 export enum Education {
@@ -149,62 +149,60 @@ export const attachmentDisplay: { [key in attachment]: string } = {
 export enum psychologicalDisorder {
     DEPRESSION = 'DEPRESSION',
     GENERALIZED_ANXIETY = 'GENERALIZED_ANXIETY',
-    BIPOLAR_DISORDER = 'BIPOLAR_DISORDER',
-    BORDERLINE_PERSONALITY_DISORDER = 'BORDERLINE_PERSONALITY_DISORDER',
-    SCHIZOPHRENIA = 'SCHIZOPHRENIA',
     OBSESSIVE_COMPULSIVE_DISORDER = 'OBSESSIVE_COMPULSIVE_DISORDER',
-    POST_TRAUMATIC_STRESS_DISORDER = 'POST_TRAUMATIC_STRESS_DISORDER',
-
-    ATTENTION_DEFICIT_HYPERACTIVITY_DISORDER = 'ATTENTION_DEFICIT_HYPERACTIVITY_DISORDER',
-    AUTISM_SPECTRUM_DISORDER = 'AUTISM_SPECTRUM_DISORDER',
-
     EATING_DISORDER = 'EATING_DISORDER',
-    SUBSTANCE_ABUSE = 'SUBSTANCE_ABUSE',
-    PERSONALITY_DISORDER = 'PERSONALITY_DISORDER',
-    DISSOCIATIVE_DISORDER = 'DISSOCIATIVE_DISORDER',
     BODY_DYSMORPHIC_DISORDER = 'BODY_DYSMORPHIC_DISORDER',
-    PARANOID_DISORDER = 'PARANOID_DISORDER',
     PANIC_DISORDER = 'PANIC_DISORDER',
-    PSYCHOSIS = 'PSYCHOSIS',
-    OTHER = 'OTHER',
+    // OTHER = 'OTHER',
+    // BIPOLAR_DISORDER = 'BIPOLAR_DISORDER',
+    // BORDERLINE_PERSONALITY_DISORDER = 'BORDERLINE_PERSONALITY_DISORDER',
+    // SCHIZOPHRENIA = 'SCHIZOPHRENIA',
+    // SUBSTANCE_ABUSE = 'SUBSTANCE_ABUSE',
+    // PERSONALITY_DISORDER = 'PERSONALITY_DISORDER',
+    // DISSOCIATIVE_DISORDER = 'DISSOCIATIVE_DISORDER',
+    // POST_TRAUMATIC_STRESS_DISORDER = 'POST_TRAUMATIC_STRESS_DISORDER',
+    // ATTENTION_DEFICIT_HYPERACTIVITY_DISORDER = 'ATTENTION_DEFICIT_HYPERACTIVITY_DISORDER',
+    // AUTISM_SPECTRUM_DISORDER = 'AUTISM_SPECTRUM_DISORDER',
+    // PARANOID_DISORDER = 'PARANOID_DISORDER',
+    // PSYCHOSIS = 'PSYCHOSIS',
 }
 
 export const psychologicalDisorderDisplay: { [key in psychologicalDisorder]: string } = {
-    [psychologicalDisorder.DEPRESSION]: "Depressão",
     [psychologicalDisorder.GENERALIZED_ANXIETY]: "Ansiedade Generalizada",
-    [psychologicalDisorder.BIPOLAR_DISORDER]: "Transtorno Bipolar",
-    [psychologicalDisorder.BORDERLINE_PERSONALITY_DISORDER]: "Transtorno de Personalidade Borderline",
-    [psychologicalDisorder.SCHIZOPHRENIA]: "Esquizofrenia",
-    [psychologicalDisorder.OBSESSIVE_COMPULSIVE_DISORDER]: "Transtorno Obsessivo Compulsivo",
-    [psychologicalDisorder.POST_TRAUMATIC_STRESS_DISORDER]: "Transtorno de Estresse Pós-Traumático",
-
-    [psychologicalDisorder.ATTENTION_DEFICIT_HYPERACTIVITY_DISORDER]: "Transtorno do Déficit de Atenção e Hiperatividade",
-    [psychologicalDisorder.AUTISM_SPECTRUM_DISORDER]: "Transtorno do Espectro Autista",
-
-    [psychologicalDisorder.EATING_DISORDER]: "Transtorno Alimentar",
-    [psychologicalDisorder.SUBSTANCE_ABUSE]: "Abuso de Substâncias",
-    [psychologicalDisorder.PERSONALITY_DISORDER]: "Transtorno de Personalidade",
-    [psychologicalDisorder.DISSOCIATIVE_DISORDER]: "Transtorno Dissociativo",
-    [psychologicalDisorder.BODY_DYSMORPHIC_DISORDER]: "Transtorno Dismórfico Corporal",
-    [psychologicalDisorder.PARANOID_DISORDER]: "Transtorno Paranoide",
+    [psychologicalDisorder.OBSESSIVE_COMPULSIVE_DISORDER]: "Transtorno Obsessivo",
+    [psychologicalDisorder.DEPRESSION]: "Depressão",
+    [psychologicalDisorder.BODY_DYSMORPHIC_DISORDER]: "T. Dismorfia Corporal",
     [psychologicalDisorder.PANIC_DISORDER]: "Transtorno do Pânico",
-    [psychologicalDisorder.PSYCHOSIS]: "Psicose",
-    [psychologicalDisorder.OTHER]: "Outros",
+    [psychologicalDisorder.EATING_DISORDER]: "Transtorno Alimentares",
+    // [psychologicalDisorder.OTHER]: "Outros",
+    // [psychologicalDisorder.BIPOLAR_DISORDER]: "Transtorno Bipolar",
+    // [psychologicalDisorder.BORDERLINE_PERSONALITY_DISORDER]: "Transtorno de Personalidade Borderline",
+    // [psychologicalDisorder.SCHIZOPHRENIA]: "Esquizofrenia",
+    // [psychologicalDisorder.POST_TRAUMATIC_STRESS_DISORDER]: "Transtorno de Estresse Pós-Traumático",
+
+    // [psychologicalDisorder.ATTENTION_DEFICIT_HYPERACTIVITY_DISORDER]: "Transtorno do Déficit de Atenção e Hiperatividade",
+    // [psychologicalDisorder.AUTISM_SPECTRUM_DISORDER]: "Transtorno do Espectro Autista",
+
+    // [psychologicalDisorder.SUBSTANCE_ABUSE]: "Abuso de Substâncias",
+    // [psychologicalDisorder.PERSONALITY_DISORDER]: "Transtorno de Personalidade",
+    // [psychologicalDisorder.DISSOCIATIVE_DISORDER]: "Transtorno Dissociativo",
+    // [psychologicalDisorder.PARANOID_DISORDER]: "Transtorno Paranoide",
+    // [psychologicalDisorder.PSYCHOSIS]: "Psicose",
 }
 
 export enum Relationship {
     RELATIONSHIP_WITH_COLLEAGUES = 'RELATIONSHIP_WITH_COLLEAGUES',
     RELATIONSHIP_WITH_FAMILY = 'RELATIONSHIP_WITH_FAMILY',
     RELATIONSHIP_WITH_PARTNER = 'RELATIONSHIP_WITH_PARTNER',
-    RELATIONSHIP_WITH_TEACHER = 'RELATIONSHIP_WITH_TEACHER',
+    RELATIVES = 'RELATIVES',
     OTHER = 'OTHER',
 }
 
 export const RelationshipDisplay: { [key in Relationship]: string } = {
-    [Relationship.RELATIONSHIP_WITH_COLLEAGUES]: "Relacionamento com Colegas",
-    [Relationship.RELATIONSHIP_WITH_FAMILY]: "Relacionamento com a Família",
-    [Relationship.RELATIONSHIP_WITH_PARTNER]: "Relacionamento com o Parceiro",
-    [Relationship.RELATIONSHIP_WITH_TEACHER]: "Relacionamento com o Professor",
+    [Relationship.RELATIONSHIP_WITH_COLLEAGUES]: "Relação com Colegas",
+    [Relationship.RELATIONSHIP_WITH_FAMILY]: "Relação com a Pais e irmãos",
+    [Relationship.RELATIONSHIP_WITH_PARTNER]: "Relação com o namorado(a)",
+    [Relationship.RELATIVES]: "Relação com Parentes",
     [Relationship.OTHER]: "Outros",
 }
 
