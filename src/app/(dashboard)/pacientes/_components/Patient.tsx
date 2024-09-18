@@ -163,7 +163,7 @@ export const Patient = () => {
   ];
   
 
-  const cousesOptions = Object.keys(CoursesDisplay).map((key) => ({
+  const coursesOptions = Object.keys(CoursesDisplay).map((key) => ({
     value: key,
     label: CoursesDisplay[key as Courses],
   }));
@@ -239,7 +239,7 @@ export const Patient = () => {
             <SelectValue placeholder="Curso" />
           </SelectTrigger>
           <SelectContent>
-            {cousesOptions.map((option) => (
+            {coursesOptions.map((option) => (
               <SelectItem key={option.value} value={option.value}>
                 {option.label}
               </SelectItem>

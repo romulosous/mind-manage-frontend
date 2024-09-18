@@ -40,8 +40,15 @@ import {
   CardTitle,
 } from "@/components/ui/card";
 import { Checkbox } from "@/components/ui/checkbox";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { Textarea } from "@/components/ui/textarea";
+import {
+  Select,
+  SelectContent,
+  SelectItem,
+  SelectTrigger,
+  SelectValue,
+} from "@/components/ui/select";
 
 const formSchema = z.object({
   name: z.string().min(2, {
@@ -54,20 +61,38 @@ const formSchema = z.object({
     message: "Digite um número de telefone.",
   }),
   registration: z
-    .string()
-    .min(2, {
+    .string({
       message: "Digite uma matrícula.",
     })
     .optional(),
+  education: z
+    .union([
+      z.enum([
+        Education.MEDIO,
+        Education.SUPERIOR,
+        Education.POS_GRADUACAO,
+        Education.TECNICO,
+        Education.MESTRADO,
+      ]),
+      z.string().min(0).max(0),
+    ])
+    .optional(),
+
   course: z
-    .string()
-    .min(2, {
-      message: "Selecione um curso.",
-    })
+    .union([
+      z.enum([
+        Courses.FISICA,
+        Courses.QUIMICA,
+        Courses.ADS,
+        Courses.ELETROTECNICA,
+        Courses.ADMINISTRACAO,
+        Courses.INFORMATICA,
+      ]),
+      z.string().min(0).max(0),
+    ])
     .optional(),
   series: z
-    .string()
-    .min(2, {
+    .string({
       message: "Selecione uma série.",
     })
     .optional(),
@@ -76,17 +101,35 @@ const formSchema = z.object({
       message: "Digite o número de sessões.",
     })
     .optional(),
+  patientType: z
+    .union([
+      z.enum(
+        [
+          PatientType.STUDENT,
+          PatientType.CONTRACTOR,
+          PatientType.GUARDIAN,
+          PatientType.TEACHER,
+        ],
+        {
+          message: "Selecione um tipo de paciente válido.",
+        }
+      ),
+      z.string({
+        message: "Selecione um tipo de paciente.",
+      }).min(1, {
+        message: "Selecione um tipo de paciente.",
+      }).max(1), // String vazia
+    ])
+    .optional(),
   psychologicalDisorders: z
     .array(
       z.enum(Object.values(psychologicalDisorderEnum) as [string, ...string[]])
     )
     .optional(),
-  otherPsychologicalDisorders: z.string().optional(),
 
   difficulty: z
     .array(z.enum(Object.values(Difficulty) as [string, ...string[]]))
     .optional(),
-  otherDifficulty: z.string().optional(),
 
   relationship: z
     .array(z.enum(Object.values(Relationship) as [string, ...string[]]))
@@ -95,21 +138,22 @@ const formSchema = z.object({
 });
 
 export function ProfileForm() {
-  // 1. Define your form.
   const form = useForm<z.infer<typeof formSchema>>({
     resolver: zodResolver(formSchema),
     defaultValues: {
       name: "",
       email: "",
       phone: "",
+      patientType: "",
       registration: "",
       course: "",
+      education: "",
       series: "",
       sessions: 0,
       psychologicalDisorders: [],
-      otherPsychologicalDisorders: "",
+    //   otherPsychologicalDisorders: "",
       difficulty: [],
-      otherDifficulty: "",
+    //   otherDifficulty: "",
       relationship: [],
       otherRelationship: "",
     },
@@ -124,16 +168,6 @@ export function ProfileForm() {
     []
   );
 
-  //   tipo event checkbox
-  //   const handleCheckboxChange = (event: React.ChangeEvent<HTMLInputElement>) => {
-  //     const { value, checked } = event.target;
-
-  //     if (checked) {
-  //       setSelectedPsychologicalDisorders([...selectedPsychologicalDisorders, value]);
-  //     } else {
-  //       setSelectedPsychologicalDisorders(selectedPsychologicalDisorders.filter((t) => t !== value));
-  //     }
-  //   };
 
   const handleTranstornoChange = (
     event: React.ChangeEvent<HTMLInputElement>
@@ -185,7 +219,7 @@ export function ProfileForm() {
     console.log(values);
   }
 
-  const cousesOptions = Object.keys(CoursesDisplay).map((key) => ({
+  const coursesOptions = Object.keys(CoursesDisplay).map((key) => ({
     value: key,
     label: CoursesDisplay[key as Courses],
   }));
@@ -243,6 +277,21 @@ export function ProfileForm() {
     label: RelationshipDisplay[key as Relationship],
   }));
 
+  const isStudent = form.watch("patientType") === PatientType.STUDENT;
+  console.log("isStudent", isStudent);
+
+  useEffect(() => {
+    if (!isStudent) {
+      console.log("reset");
+      form.setValue("registration", "");
+      form.setValue("course", "");
+      form.setValue("education", "");
+      form.setValue("series", "");
+    }
+  }, [isStudent]);
+
+  console.log("form", form.getValues());
+
   return (
     <Form {...form}>
       <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-8">
@@ -261,30 +310,110 @@ export function ProfileForm() {
                 </FormItem>
               )}
             />
+            <div className="flex gap-5">
+              <FormField
+                control={form.control}
+                name="email"
+                render={({ field }) => (
+                  <FormItem className="flex-1">
+                    <FormLabel>E-mail:</FormLabel>
+                    <FormControl>
+                      <Input placeholder="E-mail" {...field} />
+                    </FormControl>
+                    <FormMessage />
+                  </FormItem>
+                )}
+              />
+              <FormField
+                control={form.control}
+                name="phone"
+                render={({ field }) => (
+                  <FormItem className="flex-1">
+                    <FormLabel>Telefone:</FormLabel>
+                    <FormControl>
+                      <Input placeholder="Telefone" {...field} />
+                    </FormControl>
+                    <FormMessage />
+                  </FormItem>
+                )}
+              />
+            </div>
             <FormField
               control={form.control}
-              name="email"
+              name="patientType"
               render={({ field }) => (
                 <FormItem>
-                  <FormLabel>E-mail:</FormLabel>
+                  <FormLabel>Tipo Paciente:</FormLabel>
                   <FormControl>
-                    <Input placeholder="E-mail" {...field} />
+                    {/* <Input placeholder="E-mail" {...field} /> */}
+                    <Select
+                      onValueChange={field.onChange}
+                      //   defaultValue={field.value}
+                      value={field.value}
+                      // {...field}
+                    >
+                      <SelectTrigger className="w-[180px]">
+                        <SelectValue placeholder="Tipo Paciente" />
+                      </SelectTrigger>
+                      <SelectContent>
+                        {PatientTypeOptions.map((option) => (
+                          <SelectItem key={option.value} value={option.value}>
+                            {option.label}
+                          </SelectItem>
+                        ))}
+                      </SelectContent>
+                    </Select>
                   </FormControl>
                   <FormMessage />
                 </FormItem>
               )}
             />
           </div>
+
           <div className="flex gap-5 flex-1 flex-col">
             <div className="flex gap-5">
               <FormField
                 control={form.control}
                 name="registration"
                 render={({ field }) => (
-                  <FormItem>
+                  <FormItem className="w-[180px]">
                     <FormLabel>Matrícula:</FormLabel>
                     <FormControl>
-                      <Input placeholder="Matrícula" {...field} />
+                      <Input
+                        placeholder="Matrícula"
+                        {...field}
+                        disabled={!isStudent}
+                      />
+                    </FormControl>
+                    <FormMessage />
+                  </FormItem>
+                )}
+              />
+
+              <FormField
+                control={form.control}
+                name="education"
+                render={({ field }) => (
+                  <FormItem>
+                    <FormLabel>Ensino:</FormLabel>
+                    <FormControl>
+                      <Select
+                        onValueChange={field.onChange}
+                        // defaultValue={field.value}
+                        value={field.value}
+                        disabled={!isStudent}
+                      >
+                        <SelectTrigger className="w-[180px]">
+                          <SelectValue placeholder="Ensino" />
+                        </SelectTrigger>
+                        <SelectContent>
+                          {educationOptions.map((option) => (
+                            <SelectItem key={option.value} value={option.value}>
+                              {option.label}
+                            </SelectItem>
+                          ))}
+                        </SelectContent>
+                      </Select>
                     </FormControl>
                     <FormMessage />
                   </FormItem>
@@ -298,20 +427,22 @@ export function ProfileForm() {
                   <FormItem>
                     <FormLabel>Curso:</FormLabel>
                     <FormControl>
-                      <Input placeholder="Curso" {...field} />
-                    </FormControl>
-                    <FormMessage />
-                  </FormItem>
-                )}
-              />
-              <FormField
-                control={form.control}
-                name="series"
-                render={({ field }) => (
-                  <FormItem>
-                    <FormLabel>Série/Módulo:</FormLabel>
-                    <FormControl>
-                      <Input placeholder="Série/Módulo" {...field} />
+                      <Select
+                        onValueChange={field.onChange}
+                        value={field.value}
+                        disabled={!isStudent}
+                      >
+                        <SelectTrigger className="w-[180px]">
+                          <SelectValue placeholder="Curso" />
+                        </SelectTrigger>
+                        <SelectContent>
+                          {coursesOptions.map((option) => (
+                            <SelectItem key={option.value} value={option.value}>
+                              {option.label}
+                            </SelectItem>
+                          ))}
+                        </SelectContent>
+                      </Select>
                     </FormControl>
                     <FormMessage />
                   </FormItem>
@@ -321,12 +452,27 @@ export function ProfileForm() {
             <div className="flex gap-5">
               <FormField
                 control={form.control}
-                name="phone"
+                name="series"
                 render={({ field }) => (
                   <FormItem>
-                    <FormLabel>Telefone:</FormLabel>
+                    <FormLabel>Série/Módulo:</FormLabel>
                     <FormControl>
-                      <Input placeholder="Telefone" {...field} />
+                      <Select
+                        onValueChange={field.onChange}
+                        value={field.value}
+                        disabled={!isStudent}
+                      >
+                        <SelectTrigger className="w-[180px]">
+                          <SelectValue placeholder="Série" />
+                        </SelectTrigger>
+                        <SelectContent>
+                          {seriesOptions.map((option) => (
+                            <SelectItem key={option.value} value={option.value}>
+                              {option.label}
+                            </SelectItem>
+                          ))}
+                        </SelectContent>
+                      </Select>
                     </FormControl>
                     <FormMessage />
                   </FormItem>
@@ -339,7 +485,7 @@ export function ProfileForm() {
                   <FormItem>
                     <FormLabel>Sessões:</FormLabel>
                     <FormControl>
-                      <Input placeholder="Sessões" {...field} />
+                      <Input placeholder="Sessões" {...field} readOnly />
                     </FormControl>
                     <FormMessage />
                   </FormItem>
@@ -351,7 +497,9 @@ export function ProfileForm() {
         <div className="flex gap-14">
           <div className="flex flex-col gap-5">
             <section>
-              <h2 className="font-semibold text-2xl">Transtornos psicológicos:</h2>
+              <h2 className="font-semibold text-2xl">
+                Transtornos psicológicos:
+              </h2>
               <Card
                 className="max-w-[400px] border-secondary"
                 style={{ marginTop: "20px" }}
@@ -370,10 +518,7 @@ export function ProfileForm() {
                           )}
                           onChange={(event) => {
                             handleTranstornoChange(event);
-                            form.setValue(
-                              "psychologicalDisorders",
-                              selectedPsychologicalDisorders
-                            );
+                            form.setValue("psychologicalDisorders", [...selectedPsychologicalDisorders, event.target.value]);
                           }}
                         />
                         <label
@@ -390,7 +535,9 @@ export function ProfileForm() {
             </section>
 
             <section>
-              <h2 className="font-semibold text-2xl">Dificuldades no processo de E/A:</h2>
+              <h2 className="font-semibold text-2xl">
+                Dificuldades no processo de E/A:
+              </h2>
               <Card
                 className="max-w-[400px] border-secondary"
                 style={{ marginTop: "20px" }}
@@ -407,7 +554,7 @@ export function ProfileForm() {
                           checked={selectedDifficulty.includes(option.value)}
                           onChange={(event) => {
                             handleDifficultyChange(event);
-                            form.setValue("difficulty", selectedDifficulty);
+                            form.setValue("difficulty", [...selectedDifficulty, event.target.value]);
                           }}
                         />
                         <label
@@ -442,7 +589,7 @@ export function ProfileForm() {
                         checked={selectedRelationship.includes(option.value)}
                         onChange={(event) => {
                           handleRelationshipChange(event);
-                          form.setValue("relationship", selectedRelationship);
+                          form.setValue("relationship", [...selectedRelationship, event.target.value]);
                         }}
                       />
                       <label
@@ -460,10 +607,12 @@ export function ProfileForm() {
             {hasOtherRelationship && (
               <FormField
                 control={form.control}
-                name="otherPsychologicalDisorders"
+                name="otherRelationship"
                 render={({ field }) => (
                   <FormItem className="mt-5">
-                    <FormLabel>Caso tenha marcado “Outros” descrever abaixo:</FormLabel>
+                    <FormLabel>
+                      Caso tenha marcado “Outros” descrever abaixo:
+                    </FormLabel>
                     <FormControl>
                       <Textarea placeholder="Digite aqui..." {...field} />
                     </FormControl>
