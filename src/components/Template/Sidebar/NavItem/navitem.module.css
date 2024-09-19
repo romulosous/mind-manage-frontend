@@ -33,6 +33,14 @@
     border-radius: 12px;
 }
 
+.activeLink.primary {
+	background: none;
+}
+
+.activeLink.primary svg path {
+	fill: var(--primary);
+}
+
 .item:hover {
 	background-color: rgba(0, 0, 0, 0.055);
 }

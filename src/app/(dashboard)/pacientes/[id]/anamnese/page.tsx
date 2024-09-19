@@ -1,4 +1,5 @@
 import Layout from "../_components/Layout";
+import { AnamneseForm } from "./_components/AnamneseForm";
 
 interface PatientDetailsPageProps {
   params: {
@@ -16,7 +17,7 @@ export default function PatientAnamnesePage({
 
   return (
     <Layout>
-      <h1>anamnese</h1>
+      <AnamneseForm />
     </Layout>
   );
 }

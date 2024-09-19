@@ -14,10 +14,7 @@ export default function PatientInfoPage({ params }: PatientDetailsPageProps) {
 
   return (
     <Layout>
-      <div>
-      <h1>Informações pessoais</h1>
       <ProfileForm />
-      </div>
     </Layout>
   );
 }

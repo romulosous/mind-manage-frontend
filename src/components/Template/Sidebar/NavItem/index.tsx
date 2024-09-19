@@ -25,7 +25,7 @@ const NavItem = ({ title, icon, onClick, url = "", isOpenMenu, className = "", p
 			href={url}
 			className={`flex align-items-center cursor-pointer no-underline ${styles.item} ${primary ? styles.primaryBorder : ""} ${className} ${primary && isLastItem ? styles.lastItem : ""}`}
 		>
-			<div className={`${styles.iconContainer} ${isActive ? styles.activeLink : ""}`}>
+			<div className={`${styles.iconContainer} ${isActive ? styles.activeLink : ""} ${primary ? styles.primary : ""}`}>
 			{icon}
 			</div>
 			{isOpenMenu ? <span className={`${styles.title} ${primary ? styles.primary : ""}`}>{title}</span> : <></>}

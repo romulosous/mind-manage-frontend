@@ -374,243 +374,337 @@ export function ProfileForm() {
     }
   }, []);
 
-  console.log("form.watch('birth')", form.watch("birth"));
-
   return (
-    <Form {...form}>
-      <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-8">
-        <div className={style.inputsContainer}>
-          <div className="flex-1 gap-5 flex flex-col">
-            <FormField
-              control={form.control}
-              name="name"
-              render={({ field }) => (
-                <FormItem>
-                  <FormLabel>Nome:</FormLabel>
-                  <FormControl>
-                    <Input placeholder="Nome" {...field} />
-                  </FormControl>
-                  <FormMessage />
-                </FormItem>
-              )}
-            />
-            <div className="flex gap-5">
+    <div>
+      <h1 className="text-[#159A9C] text-4xl font-semibold mb-5">Informações pessoais</h1>
+      <Form {...form}>
+        <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-8">
+          <div className={style.inputsContainer}>
+            <div className="flex-1 gap-5 flex flex-col">
               <FormField
                 control={form.control}
-                name="email"
+                name="name"
                 render={({ field }) => (
-                  <FormItem className="flex-1">
-                    <FormLabel>E-mail:</FormLabel>
+                  <FormItem>
+                    <FormLabel>Nome:</FormLabel>
                     <FormControl>
-                      <Input placeholder="E-mail" {...field} />
+                      <Input placeholder="Nome" {...field} />
                     </FormControl>
                     <FormMessage />
                   </FormItem>
                 )}
               />
-              <FormField
-                control={form.control}
-                name="phone"
-                render={({ field }) => (
-                  <FormItem className="flex-1">
-                    <FormLabel>Telefone:</FormLabel>
-                    <FormControl>
-                      <Input
-                        placeholder="Telefone"
-                        value={field.value}
-                        onChange={(e) => {
-                          const phone = PhoneNumber.format(e.target.value);
-                          form.setValue("phone", phone);
-                        }}
-                      />
-                    </FormControl>
-                    <FormMessage />
-                  </FormItem>
-                )}
-              />
+              <div className="flex gap-5">
+                <FormField
+                  control={form.control}
+                  name="email"
+                  render={({ field }) => (
+                    <FormItem className="flex-1">
+                      <FormLabel>E-mail:</FormLabel>
+                      <FormControl>
+                        <Input placeholder="E-mail" {...field} />
+                      </FormControl>
+                      <FormMessage />
+                    </FormItem>
+                  )}
+                />
+                <FormField
+                  control={form.control}
+                  name="phone"
+                  render={({ field }) => (
+                    <FormItem className="flex-1">
+                      <FormLabel>Telefone:</FormLabel>
+                      <FormControl>
+                        <Input
+                          placeholder="Telefone"
+                          value={field.value}
+                          onChange={(e) => {
+                            const phone = PhoneNumber.format(e.target.value);
+                            form.setValue("phone", phone);
+                          }}
+                        />
+                      </FormControl>
+                      <FormMessage />
+                    </FormItem>
+                  )}
+                />
+              </div>
+              <div className="flex gap-5">
+                <FormField
+                  control={form.control}
+                  name="patientType"
+                  render={({ field }) => (
+                    <FormItem className="flex-1">
+                      <FormLabel>Tipo Paciente:</FormLabel>
+                      <FormControl>
+                        <Select
+                          onValueChange={field.onChange}
+                          value={field.value}
+                        >
+                          <SelectTrigger>
+                            <SelectValue placeholder="Tipo Paciente" />
+                          </SelectTrigger>
+                          <SelectContent>
+                            {PatientTypeOptions.map((option) => (
+                              <SelectItem
+                                key={option.value}
+                                value={option.value}
+                              >
+                                {option.label}
+                              </SelectItem>
+                            ))}
+                          </SelectContent>
+                        </Select>
+                      </FormControl>
+                      <FormMessage />
+                    </FormItem>
+                  )}
+                />
+                <FormField
+                  control={form.control}
+                  name="birth"
+                  render={({ field }) => (
+                    <FormItem className="flex-1">
+                      <FormLabel>Date de Nascimento</FormLabel>
+                      <FormControl>
+                        <Input
+                          type="date"
+                          //   style={{ width: "180px" }}
+                          //   value={field.value ? format(field.value, "yyyy-MM-dd") : ""}
+                          placeholder="Data de Nascimento"
+                          {...field}
+                        />
+                      </FormControl>
+                      <FormMessage />
+                    </FormItem>
+                  )}
+                />
+              </div>
             </div>
-            <div className="flex gap-5">
-            <FormField
-              control={form.control}
-              name="patientType"
-              render={({ field }) => (
-                <FormItem className="flex-1">
-                  <FormLabel>Tipo Paciente:</FormLabel>
-                  <FormControl>
-                    <Select onValueChange={field.onChange} value={field.value}>
-                      <SelectTrigger >
-                        <SelectValue placeholder="Tipo Paciente" />
-                      </SelectTrigger>
-                      <SelectContent>
-                        {PatientTypeOptions.map((option) => (
-                          <SelectItem key={option.value} value={option.value}>
+
+            <div className="flex gap-5 flex-1 flex-col">
+              <div className="flex gap-5">
+                <FormField
+                  control={form.control}
+                  name="registration"
+                  render={({ field }) => (
+                    <FormItem className="w-[180px]">
+                      <FormLabel>Matrícula:</FormLabel>
+                      <FormControl>
+                        <Input
+                          placeholder="Matrícula"
+                          {...field}
+                          disabled={!isStudent}
+                        />
+                      </FormControl>
+                      <FormMessage />
+                    </FormItem>
+                  )}
+                />
+
+                <FormField
+                  control={form.control}
+                  name="education"
+                  render={({ field }) => (
+                    <FormItem>
+                      <FormLabel>Ensino:</FormLabel>
+                      <FormControl>
+                        <Select
+                          onValueChange={field.onChange}
+                          value={field.value}
+                          disabled={!isStudent}
+                        >
+                          <SelectTrigger className="w-[180px]">
+                            <SelectValue placeholder="Ensino" />
+                          </SelectTrigger>
+                          <SelectContent>
+                            {educationOptions.map((option) => (
+                              <SelectItem
+                                key={option.value}
+                                value={option.value}
+                              >
+                                {option.label}
+                              </SelectItem>
+                            ))}
+                          </SelectContent>
+                        </Select>
+                      </FormControl>
+                      <FormMessage />
+                    </FormItem>
+                  )}
+                />
+
+                <FormField
+                  control={form.control}
+                  name="course"
+                  render={({ field }) => (
+                    <FormItem>
+                      <FormLabel>Curso:</FormLabel>
+                      <FormControl>
+                        <Select
+                          onValueChange={field.onChange}
+                          value={field.value}
+                          disabled={!isStudent}
+                        >
+                          <SelectTrigger className="w-[180px]">
+                            <SelectValue placeholder="Curso" />
+                          </SelectTrigger>
+                          <SelectContent>
+                            {coursesOptions.map((option) => (
+                              <SelectItem
+                                key={option.value}
+                                value={option.value}
+                              >
+                                {option.label}
+                              </SelectItem>
+                            ))}
+                          </SelectContent>
+                        </Select>
+                      </FormControl>
+                      <FormMessage />
+                    </FormItem>
+                  )}
+                />
+              </div>
+              <div className="flex gap-5">
+                <FormField
+                  control={form.control}
+                  name="series"
+                  render={({ field }) => (
+                    <FormItem>
+                      <FormLabel>Série/Módulo:</FormLabel>
+                      <FormControl>
+                        <Select
+                          onValueChange={field.onChange}
+                          value={field.value}
+                          disabled={!isStudent}
+                        >
+                          <SelectTrigger className="w-[180px]">
+                            <SelectValue placeholder="Série" />
+                          </SelectTrigger>
+                          <SelectContent>
+                            {seriesOptions.map((option) => (
+                              <SelectItem
+                                key={option.value}
+                                value={option.value}
+                              >
+                                {option.label}
+                              </SelectItem>
+                            ))}
+                          </SelectContent>
+                        </Select>
+                      </FormControl>
+                      <FormMessage />
+                    </FormItem>
+                  )}
+                />
+                <FormField
+                  control={form.control}
+                  name="sessions"
+                  render={({ field }) => (
+                    <FormItem>
+                      <FormLabel>Sessões:</FormLabel>
+                      <FormControl>
+                        <Input placeholder="Sessões" {...field} readOnly />
+                      </FormControl>
+                      <FormMessage />
+                    </FormItem>
+                  )}
+                />
+              </div>
+            </div>
+          </div>
+          <div className="flex gap-14">
+            <div className="flex flex-col gap-5">
+              <section>
+                <h2 className="font-semibold text-2xl">
+                  Transtornos psicológicos:
+                </h2>
+                <Card
+                  className="max-w-[400px] border-secondary"
+                  style={{ marginTop: "20px" }}
+                >
+                  <CardContent className="grid grid-cols-2 max-w-[400px] gap-2 p-2">
+                    {psychologicalDisorderOptions.map((option) => {
+                      return (
+                        <div className="flex items-center space-x-2">
+                          <input
+                            type="checkbox"
+                            id={option.value}
+                            key={option.value}
+                            value={option.value}
+                            checked={selectedPsychologicalDisorder.includes(
+                              option.value
+                            )}
+                            onChange={(event) => {
+                              handleTranstornoChange(event);
+                              form.setValue("psychologicalDisorder", [
+                                ...selectedPsychologicalDisorder,
+                                event.target.value,
+                              ]);
+                            }}
+                          />
+                          <label
+                            htmlFor={option.value}
+                            className="text-xs font-medium leading-none peer-disabled:cursor-not-allowed peer-disabled:opacity-70"
+                          >
                             {option.label}
-                          </SelectItem>
-                        ))}
-                      </SelectContent>
-                    </Select>
-                  </FormControl>
-                  <FormMessage />
-                </FormItem>
-              )}
-            />
-            <FormField
-              control={form.control}
-              name="birth"
-              render={({ field }) => (
-                <FormItem className="flex-1">
-                  <FormLabel>Date de Nascimento</FormLabel>
-                  <FormControl>
-                    <Input
-                      type="date"
-                    //   style={{ width: "180px" }}
-                      //   value={field.value ? format(field.value, "yyyy-MM-dd") : ""}
-                      placeholder="Data de Nascimento"
-                      {...field}
-                    />
-                  </FormControl>
-                  <FormMessage />
-                </FormItem>
-              )}
-            />
-            </div>
-          </div>
+                          </label>
+                        </div>
+                      );
+                    })}
+                  </CardContent>
+                </Card>
+              </section>
 
-          <div className="flex gap-5 flex-1 flex-col">
-            <div className="flex gap-5">
-              <FormField
-                control={form.control}
-                name="registration"
-                render={({ field }) => (
-                  <FormItem className="w-[180px]">
-                    <FormLabel>Matrícula:</FormLabel>
-                    <FormControl>
-                      <Input
-                        placeholder="Matrícula"
-                        {...field}
-                        disabled={!isStudent}
-                      />
-                    </FormControl>
-                    <FormMessage />
-                  </FormItem>
-                )}
-              />
-
-              <FormField
-                control={form.control}
-                name="education"
-                render={({ field }) => (
-                  <FormItem>
-                    <FormLabel>Ensino:</FormLabel>
-                    <FormControl>
-                      <Select
-                        onValueChange={field.onChange}
-                        value={field.value}
-                        disabled={!isStudent}
-                      >
-                        <SelectTrigger className="w-[180px]">
-                          <SelectValue placeholder="Ensino" />
-                        </SelectTrigger>
-                        <SelectContent>
-                          {educationOptions.map((option) => (
-                            <SelectItem key={option.value} value={option.value}>
-                              {option.label}
-                            </SelectItem>
-                          ))}
-                        </SelectContent>
-                      </Select>
-                    </FormControl>
-                    <FormMessage />
-                  </FormItem>
-                )}
-              />
-
-              <FormField
-                control={form.control}
-                name="course"
-                render={({ field }) => (
-                  <FormItem>
-                    <FormLabel>Curso:</FormLabel>
-                    <FormControl>
-                      <Select
-                        onValueChange={field.onChange}
-                        value={field.value}
-                        disabled={!isStudent}
-                      >
-                        <SelectTrigger className="w-[180px]">
-                          <SelectValue placeholder="Curso" />
-                        </SelectTrigger>
-                        <SelectContent>
-                          {coursesOptions.map((option) => (
-                            <SelectItem key={option.value} value={option.value}>
-                              {option.label}
-                            </SelectItem>
-                          ))}
-                        </SelectContent>
-                      </Select>
-                    </FormControl>
-                    <FormMessage />
-                  </FormItem>
-                )}
-              />
+              <section>
+                <h2 className="font-semibold text-2xl">
+                  Dificuldades no processo de E/A:
+                </h2>
+                <Card
+                  className="max-w-[400px] border-secondary"
+                  style={{ marginTop: "20px" }}
+                >
+                  <CardContent className="grid grid-cols-2 max-w-[400px] gap-2 p-2">
+                    {difficultyOptions.map((option) => {
+                      return (
+                        <div className="flex items-center space-x-2">
+                          <input
+                            type="checkbox"
+                            id={option.value}
+                            key={option.value}
+                            value={option.value}
+                            checked={selectedDifficulty.includes(option.value)}
+                            onChange={(event) => {
+                              handleDifficultyChange(event);
+                              form.setValue("difficulty", [
+                                ...selectedDifficulty,
+                                event.target.value,
+                              ]);
+                            }}
+                          />
+                          <label
+                            htmlFor={option.value}
+                            className="text-xs font-medium leading-none peer-disabled:cursor-not-allowed peer-disabled:opacity-70"
+                          >
+                            {option.label}
+                          </label>
+                        </div>
+                      );
+                    })}
+                  </CardContent>
+                </Card>
+              </section>
             </div>
-            <div className="flex gap-5">
-              <FormField
-                control={form.control}
-                name="series"
-                render={({ field }) => (
-                  <FormItem>
-                    <FormLabel>Série/Módulo:</FormLabel>
-                    <FormControl>
-                      <Select
-                        onValueChange={field.onChange}
-                        value={field.value}
-                        disabled={!isStudent}
-                      >
-                        <SelectTrigger className="w-[180px]">
-                          <SelectValue placeholder="Série" />
-                        </SelectTrigger>
-                        <SelectContent>
-                          {seriesOptions.map((option) => (
-                            <SelectItem key={option.value} value={option.value}>
-                              {option.label}
-                            </SelectItem>
-                          ))}
-                        </SelectContent>
-                      </Select>
-                    </FormControl>
-                    <FormMessage />
-                  </FormItem>
-                )}
-              />
-              <FormField
-                control={form.control}
-                name="sessions"
-                render={({ field }) => (
-                  <FormItem>
-                    <FormLabel>Sessões:</FormLabel>
-                    <FormControl>
-                      <Input placeholder="Sessões" {...field} readOnly />
-                    </FormControl>
-                    <FormMessage />
-                  </FormItem>
-                )}
-              />
-            </div>
-          </div>
-        </div>
-        <div className="flex gap-14">
-          <div className="flex flex-col gap-5">
+
             <section>
-              <h2 className="font-semibold text-2xl">
-                Transtornos psicológicos:
-              </h2>
+              <h2 className="font-semibold text-2xl">Habilidades sociais:</h2>
               <Card
                 className="max-w-[400px] border-secondary"
                 style={{ marginTop: "20px" }}
               >
                 <CardContent className="grid grid-cols-2 max-w-[400px] gap-2 p-2">
-                  {psychologicalDisorderOptions.map((option) => {
+                  {relationshipOptions.map((option) => {
                     return (
                       <div className="flex items-center space-x-2">
                         <input
@@ -618,20 +712,18 @@ export function ProfileForm() {
                           id={option.value}
                           key={option.value}
                           value={option.value}
-                          checked={selectedPsychologicalDisorder.includes(
-                            option.value
-                          )}
+                          checked={selectedRelationship.includes(option.value)}
                           onChange={(event) => {
-                            handleTranstornoChange(event);
-                            form.setValue("psychologicalDisorder", [
-                              ...selectedPsychologicalDisorder,
+                            handleRelationshipChange(event);
+                            form.setValue("relationship", [
+                              ...selectedRelationship,
                               event.target.value,
                             ]);
                           }}
                         />
                         <label
                           htmlFor={option.value}
-                          className="text-xs font-medium leading-none peer-disabled:cursor-not-allowed peer-disabled:opacity-70"
+                          className="text-xs font-normal peer-disabled:cursor-not-allowed peer-disabled:opacity-70"
                         >
                           {option.label}
                         </label>
@@ -640,108 +732,32 @@ export function ProfileForm() {
                   })}
                 </CardContent>
               </Card>
-            </section>
 
-            <section>
-              <h2 className="font-semibold text-2xl">
-                Dificuldades no processo de E/A:
-              </h2>
-              <Card
-                className="max-w-[400px] border-secondary"
-                style={{ marginTop: "20px" }}
-              >
-                <CardContent className="grid grid-cols-2 max-w-[400px] gap-2 p-2">
-                  {difficultyOptions.map((option) => {
-                    return (
-                      <div className="flex items-center space-x-2">
-                        <input
-                          type="checkbox"
-                          id={option.value}
-                          key={option.value}
-                          value={option.value}
-                          checked={selectedDifficulty.includes(option.value)}
-                          onChange={(event) => {
-                            handleDifficultyChange(event);
-                            form.setValue("difficulty", [
-                              ...selectedDifficulty,
-                              event.target.value,
-                            ]);
-                          }}
-                        />
-                        <label
-                          htmlFor={option.value}
-                          className="text-xs font-medium leading-none peer-disabled:cursor-not-allowed peer-disabled:opacity-70"
-                        >
-                          {option.label}
-                        </label>
-                      </div>
-                    );
-                  })}
-                </CardContent>
-              </Card>
+              {hasOtherRelationship && (
+                <FormField
+                  control={form.control}
+                  name="otherRelationship"
+                  render={({ field }) => (
+                    <FormItem className="mt-5">
+                      <FormLabel>
+                        Caso tenha marcado “Outros” descrever abaixo:
+                      </FormLabel>
+                      <FormControl>
+                        <Textarea placeholder="Digite aqui..." {...field} />
+                      </FormControl>
+                      <FormMessage />
+                    </FormItem>
+                  )}
+                />
+              )}
             </section>
           </div>
 
-          <section>
-            <h2 className="font-semibold text-2xl">Habilidades sociais:</h2>
-            <Card
-              className="max-w-[400px] border-secondary"
-              style={{ marginTop: "20px" }}
-            >
-              <CardContent className="grid grid-cols-2 max-w-[400px] gap-2 p-2">
-                {relationshipOptions.map((option) => {
-                  return (
-                    <div className="flex items-center space-x-2">
-                      <input
-                        type="checkbox"
-                        id={option.value}
-                        key={option.value}
-                        value={option.value}
-                        checked={selectedRelationship.includes(option.value)}
-                        onChange={(event) => {
-                          handleRelationshipChange(event);
-                          form.setValue("relationship", [
-                            ...selectedRelationship,
-                            event.target.value,
-                          ]);
-                        }}
-                      />
-                      <label
-                        htmlFor={option.value}
-                        className="text-xs font-normal peer-disabled:cursor-not-allowed peer-disabled:opacity-70"
-                      >
-                        {option.label}
-                      </label>
-                    </div>
-                  );
-                })}
-              </CardContent>
-            </Card>
-
-            {hasOtherRelationship && (
-              <FormField
-                control={form.control}
-                name="otherRelationship"
-                render={({ field }) => (
-                  <FormItem className="mt-5">
-                    <FormLabel>
-                      Caso tenha marcado “Outros” descrever abaixo:
-                    </FormLabel>
-                    <FormControl>
-                      <Textarea placeholder="Digite aqui..." {...field} />
-                    </FormControl>
-                    <FormMessage />
-                  </FormItem>
-                )}
-              />
-            )}
-          </section>
-        </div>
-
-        <Button type="submit" className="bg-secondary-foreground text-white">
-          Submit
-        </Button>
-      </form>
-    </Form>
-  );
+          <Button type="submit" className="bg-secondary-foreground text-white">
+            Submit
+          </Button>
+        </form>
+      </Form>
+    </div>
+  ); 
 }
