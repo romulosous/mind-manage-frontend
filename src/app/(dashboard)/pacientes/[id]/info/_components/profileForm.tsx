@@ -46,6 +46,7 @@ import {
 import { patientApi } from "@/services/patient";
 import { useParams } from "next/navigation";
 import { PhoneNumber } from "@/functions/format-phone-number";
+import Loading from "@/components/Loading";
 
 const formSchema = z.object({
   name: z.string().min(2, {
@@ -373,6 +374,10 @@ export function ProfileForm() {
       fetchPatientById();
     }
   }, []);
+
+  if (loading) {
+    return <Loading />;
+  }
 
   return (
     <div>
