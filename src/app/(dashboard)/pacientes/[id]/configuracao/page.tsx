@@ -1,3 +1,4 @@
+import { Settings } from "lucide-react";
 import Layout from "../_components/Layout";
 
 interface PatientDetailsPageProps {
@@ -13,7 +14,9 @@ export default function PatientConfigPage({ params }: PatientDetailsPageProps) {
 
   return (
     <Layout>
-      <h1>configuracao</h1>
+       <div className="flex justify-center items-center h-full">
+       <h1 className="text-[#159A9C] text-4xl font-semibold mb-5 flex gap-3 items-center">Em breve! <Settings size={30} /></h1>
+       </div>
     </Layout>
   );
 }

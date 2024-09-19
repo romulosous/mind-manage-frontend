@@ -6,8 +6,9 @@
 
 .filters {
   display: flex;
-  justify-content: space-between;
+  /* justify-content: space-between; */
   margin-bottom: 20px;
+  align-items: center;
   gap: 20px;
   background-color: white;
   padding: 6px;

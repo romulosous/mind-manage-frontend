@@ -1,7 +1,7 @@
 
 "use client"
 import React from "react";
-import styles from "./patientDetails.module.css";
+import styles from "./Sidebar.module.css";
 import NavItem from "@/components/Template/Sidebar/NavItem";
 import { useParams } from "next/navigation";
 

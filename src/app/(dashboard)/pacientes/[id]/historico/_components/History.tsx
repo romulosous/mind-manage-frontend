@@ -165,16 +165,12 @@ export const History = () => {
   const [count, setCount] = useState(0);
 
   const [data, setData] = useState<IAppointments[]>([]);
-  const [date, setDate] = useState<DateRange | undefined>({
-    from: new Date(),
-    to: new Date(),
-  });
+  const [date, setDate] = useState<Date>();
   const [loading, setLoading] = useState(true);
 
   const [filters, setFilters] = useState<FilterAppointment>({
     limit: 10,
   });
-
 
   const fetchAppointments = async (
     params: FilterAppointment = { limit: 10 }
@@ -193,9 +189,20 @@ export const History = () => {
     }
   };
 
+  const handleFetchAppointmentsWithFilters = async () => {
+    await fetchAppointments({
+      ...filters,
+      limit: perPage,
+      page: currentPage,
+      minDate: date,
+      maxDate: date,
+    });
+  }
+
   useEffect(() => {
     fetchAppointments({
       ...filters,
+      status: Status.FINALIZED, // uma sessão só é considerada finalizada se o status for FINALIZED
       limit: perPage,
       page: currentPage,
     });
@@ -209,6 +216,46 @@ export const History = () => {
     <div>
       <h1 className="text-[#159A9C] text-4xl font-semibold mb-5">Histórico</h1>
       <div className={styles.container}>
+        <div className={styles.filters}>
+          <div className={cn("grid gap-2")}>
+            <Popover>
+              <PopoverTrigger asChild>
+                <Button
+                  variant={"outline"}
+                  className={cn(
+                    "w-[280px] justify-start text-left font-normal",
+                    !date && "text-muted-foreground"
+                  )}
+                >
+                  <CalendarIcon className="mr-2 h-4 w-4" />
+                  {date ? format(date, "dd/MM/yyyy", { locale: ptBR }) : <span>DD/MM/AAAA</span>}
+                </Button>
+              </PopoverTrigger>
+              <PopoverContent className="w-auto p-0" align="start">
+                <Calendar
+                  mode="single"
+                  selected={date}
+                  onSelect={setDate}
+                  initialFocus
+                />
+              </PopoverContent>
+            </Popover>
+          </div>
+          <div>
+            {/* <Button  onClick={() => handleFetchAppointmentsWithFilters()} className="h-12">
+              Filtrar
+            </Button> */}
+            <Button
+            variant="outline"
+            size="lg"
+            className="bg-secondary-foreground text-white h-8"
+            title="Detalhes"
+            onClick={() => handleFetchAppointmentsWithFilters()}
+          >
+            Filtrar
+          </Button>
+          </div>
+        </div>
         <div>
           {data ? (
             <DataTable

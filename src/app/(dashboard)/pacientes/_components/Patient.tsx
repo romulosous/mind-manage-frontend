@@ -144,17 +144,18 @@ export const Patient = () => {
       ),
     },
     {
-      id: "actions",
+      // id: "actions",
+      accessorKey: "id",
       header: "Ações",
-      enableHiding: false,
+      // enableHiding: false,
       cell: ({ row }) => {
-        const id = row.id;
+        const id = row.getValue("id");
         console.log("id", id);
   
         return (
           <div className="flex gap-3">
             <Button title="Detalhes" onClick={() => {
-              router.push(`/pacientes/${id}`)
+              router.push(`/pacientes/${id}/info`)
             }}><EyeIcon /></Button>
           </div>
         );
