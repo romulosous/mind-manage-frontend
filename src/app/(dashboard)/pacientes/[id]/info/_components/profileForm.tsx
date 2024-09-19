@@ -32,10 +32,7 @@ import {
   Relationship,
   RelationshipDisplay,
 } from "@/@types/patient";
-import {
-  Card,
-  CardContent,
-} from "@/components/ui/card";
+import { Card, CardContent } from "@/components/ui/card";
 import { Checkbox } from "@/components/ui/checkbox";
 import { useEffect, useState } from "react";
 import { Textarea } from "@/components/ui/textarea";
@@ -60,9 +57,11 @@ const formSchema = z.object({
   phone: z.string().min(2, {
     message: "Digite um número de telefone.",
   }),
-   birth: z.string({
-    message: "Digite uma data de nascimento"
-   }).optional(),
+  birth: z
+    .string({
+      message: "Digite uma data de nascimento",
+    })
+    .optional(),
   registration: z
     .string({
       message: "Digite uma matrícula.",
@@ -224,12 +223,11 @@ export function ProfileForm() {
     const payload = { ...values, birth: dateBirth, phone: phoneWithoutMask };
     delete payload.sessions;
 
-    if(params.id === "new") {
+    if (params.id === "new") {
       patientApi.createPatient(payload);
     } else {
-        patientApi.updatePatient(params.id as string, payload);
+      patientApi.updatePatient(params.id as string, payload);
     }
-
   }
 
   const coursesOptions = Object.keys(CoursesDisplay).map((key) => ({
@@ -303,23 +301,30 @@ export function ProfileForm() {
   }, [isStudent]);
 
   function formatDate(isoString: string) {
-      if(isoString === undefined || isoString === null) return;
-      
+    if (isoString === undefined || isoString === null) return;
+
     const date = new Date(isoString);
-  
+
     const year = date.getFullYear();
-    const month = String(date.getMonth() + 1).padStart(2, '0'); 
-  
-    const day = String(date.getDate()).padStart(2,   
-   '0');
-  
+    const month = String(date.getMonth() + 1).padStart(2, "0");
+
+    const day = String(date.getDate()).padStart(2, "0");
+
     // Format the date as YYYY-MM-DD
     return `${year}-${month}-${day}`;
   }
 
-  function convertToISODate(dateString: string, hours = 3, minutes = 0, seconds = 0, milliseconds = 0) {
-    const [year, month, day] = dateString.split('-').map(Number);
-    const date = new Date(Date.UTC(year, month - 1, day, hours, minutes, seconds, milliseconds));
+  function convertToISODate(
+    dateString: string,
+    hours = 3,
+    minutes = 0,
+    seconds = 0,
+    milliseconds = 0
+  ) {
+    const [year, month, day] = dateString.split("-").map(Number);
+    const date = new Date(
+      Date.UTC(year, month - 1, day, hours, minutes, seconds, milliseconds)
+    );
     return date.toISOString();
   }
 
@@ -364,8 +369,8 @@ export function ProfileForm() {
   };
 
   useEffect(() => {
-    if(params.id !== "new"){
-        fetchPatientById();
+    if (params.id !== "new") {
+      fetchPatientById();
     }
   }, []);
 
@@ -410,28 +415,30 @@ export function ProfileForm() {
                   <FormItem className="flex-1">
                     <FormLabel>Telefone:</FormLabel>
                     <FormControl>
-                      <Input placeholder="Telefone" value={field.value} onChange={(e) => {
-                        const phone = PhoneNumber.format(e.target.value);
-                        form.setValue("phone", phone);
-                      }} />
+                      <Input
+                        placeholder="Telefone"
+                        value={field.value}
+                        onChange={(e) => {
+                          const phone = PhoneNumber.format(e.target.value);
+                          form.setValue("phone", phone);
+                        }}
+                      />
                     </FormControl>
                     <FormMessage />
                   </FormItem>
                 )}
               />
             </div>
+            <div className="flex gap-5">
             <FormField
               control={form.control}
               name="patientType"
               render={({ field }) => (
-                <FormItem>
+                <FormItem className="flex-1">
                   <FormLabel>Tipo Paciente:</FormLabel>
                   <FormControl>
-                    <Select
-                      onValueChange={field.onChange}
-                      value={field.value}
-                    >
-                      <SelectTrigger className="w-[180px]">
+                    <Select onValueChange={field.onChange} value={field.value}>
+                      <SelectTrigger >
                         <SelectValue placeholder="Tipo Paciente" />
                       </SelectTrigger>
                       <SelectContent>
@@ -448,23 +455,25 @@ export function ProfileForm() {
               )}
             />
             <FormField
-          control={form.control}
-          name="birth"
-          render={({ field }) => (
-            <FormItem className="flex flex-col">
-              <FormLabel>Date de Nascimento</FormLabel>
+              control={form.control}
+              name="birth"
+              render={({ field }) => (
+                <FormItem className="flex-1">
+                  <FormLabel>Date de Nascimento</FormLabel>
                   <FormControl>
                     <Input
                       type="date"
-                    //   value={field.value ? format(field.value, "yyyy-MM-dd") : ""}
+                    //   style={{ width: "180px" }}
+                      //   value={field.value ? format(field.value, "yyyy-MM-dd") : ""}
                       placeholder="Data de Nascimento"
                       {...field}
                     />
                   </FormControl>
-              <FormMessage />
-            </FormItem>
-          )}
-        />
+                  <FormMessage />
+                </FormItem>
+              )}
+            />
+            </div>
           </div>
 
           <div className="flex gap-5 flex-1 flex-col">
