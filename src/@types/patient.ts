@@ -5,7 +5,7 @@ export interface Patient {
     name: string;
     email: string;
     password: string;
-    birth?: Date | string | number;
+    birth?: Date | string;
     registration?: string;
     course?: Courses;
     education?: Education;

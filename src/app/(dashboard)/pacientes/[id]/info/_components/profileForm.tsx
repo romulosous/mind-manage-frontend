@@ -2,7 +2,7 @@
 
 import { zodResolver } from "@hookform/resolvers/zod";
 import { useForm } from "react-hook-form";
-import { date, z } from "zod";
+import { z } from "zod";
 
 import style from "./profileForm.module.css";
 
@@ -35,10 +35,6 @@ import {
 import {
   Card,
   CardContent,
-  CardDescription,
-  CardFooter,
-  CardHeader,
-  CardTitle,
 } from "@/components/ui/card";
 import { Checkbox } from "@/components/ui/checkbox";
 import { useEffect, useState } from "react";
@@ -52,13 +48,6 @@ import {
 } from "@/components/ui/select";
 import { patientApi } from "@/services/patient";
 import { useParams } from "next/navigation";
-import { set } from "lodash";
-import { Calendar } from "@/components/ui/calendar";
-import { Popover, PopoverContent, PopoverTrigger } from "@/components/ui/popover";
-import { CalendarIcon } from "lucide-react";
-import { format } from "date-fns";
-import { cn } from "@/lib/utils";
-import { ptBR } from "date-fns/locale";
 
 const formSchema = z.object({
   name: z.string().min(2, {
@@ -168,9 +157,7 @@ export function ProfileForm() {
       series: "",
       sessions: 0,
       psychologicalDisorder: [],
-      //   otherPsychologicalDisorder: "",
       difficulty: [],
-      //   otherDifficulty: "",
       relationship: [],
       otherRelationship: "",
     },
@@ -185,7 +172,6 @@ export function ProfileForm() {
     []
   );
 
-  const [data, setData] = useState<Patient>();
   const [loading, setLoading] = useState(true);
 
   const params = useParams();
@@ -231,11 +217,6 @@ export function ProfileForm() {
     }
   };
 
-  //   const hasOthersPsychologicalDisorder =
-  //     selectedPsychologicalDisorder.includes("OTHER");
-  //   const hasOtherDifficulty = selectedDifficulty.includes("OTHER");
-  const hasOtherRelationship = selectedRelationship.includes("OTHER");
-  // 2. Define a submit handler.
   function onSubmit(values: z.infer<typeof formSchema>) {
     const dateBirth = convertToISODate(values.birth as string);
     const payload = { ...values, birth: dateBirth };
@@ -308,6 +289,7 @@ export function ProfileForm() {
   }));
 
   const isStudent = form.watch("patientType") === PatientType.STUDENT;
+  const hasOtherRelationship = selectedRelationship.includes("OTHER");
 
   useEffect(() => {
     if (!isStudent) {
@@ -321,12 +303,10 @@ export function ProfileForm() {
   function formatDate(isoString: string) {
       if(isoString === undefined || isoString === null) return;
       
-      // Create a Date object from the ISO string
     const date = new Date(isoString);
   
-    // Get the year, month, and day components
     const year = date.getFullYear();
-    const month = String(date.getMonth() + 1).padStart(2, '0'); // Months are zero-indexed   
+    const month = String(date.getMonth() + 1).padStart(2, '0'); 
   
     const day = String(date.getDate()).padStart(2,   
    '0');
@@ -347,11 +327,9 @@ export function ProfileForm() {
       const response = (await patientApi.fetchPatientById(
         params.id as string
       )) as unknown as Patient;
-      setData(response);
 
       const birth = formatDate(response.birth as string);
 
-      console.log("birth", birth);
       const state = {
         name: response.name,
         email: response.email,
@@ -440,12 +418,9 @@ export function ProfileForm() {
                 <FormItem>
                   <FormLabel>Tipo Paciente:</FormLabel>
                   <FormControl>
-                    {/* <Input placeholder="E-mail" {...field} /> */}
                     <Select
                       onValueChange={field.onChange}
-                      //   defaultValue={field.value}
                       value={field.value}
-                      // {...field}
                     >
                       <SelectTrigger className="w-[180px]">
                         <SelectValue placeholder="Tipo Paciente" />
@@ -469,8 +444,6 @@ export function ProfileForm() {
           render={({ field }) => (
             <FormItem className="flex flex-col">
               <FormLabel>Date de Nascimento</FormLabel>
-              {/* <Popover> */}
-                {/* <PopoverTrigger asChild> */}
                   <FormControl>
                     <Input
                       type="date"
@@ -478,40 +451,7 @@ export function ProfileForm() {
                       placeholder="Data de Nascimento"
                       {...field}
                     />
-                    {/* <Button
-                      variant={"outline"}
-                      className={cn(
-                        "w-[240px] pl-3 text-left font-normal",
-                        !field.value && "text-muted-foreground"
-                      )}
-                    >
-                      {field.value ? (
-                        // format(field.value, "PPP")
-                        format(field.value, "dd/MM/yyyy", { locale: ptBR })
-                      ) : (
-                        <span>Data Nascimento</span>
-                      )}
-                      <CalendarIcon className="ml-auto h-4 w-4 opacity-50" />
-                    </Button> */}
                   </FormControl>
-                {/* </PopoverTrigger> */}
-                {/* <PopoverContent className="w-auto p-0" align="start">
-                  <Calendar
-                    mode="single"
-                    selected={field.value}
-                    onSelect={field.onChange}
-                    toYear={new Date().getFullYear()}
-                    fromYear={1900}
-                    disabled={(date) =>
-                      date > new Date() || date < new Date("1900-01-01")
-                    }
-                    initialFocus
-                  />
-                </PopoverContent>
-              </Popover> */}
-              <FormDescription>
-                Your date of birth is used to calculate your age.
-              </FormDescription>
               <FormMessage />
             </FormItem>
           )}
@@ -547,7 +487,6 @@ export function ProfileForm() {
                     <FormControl>
                       <Select
                         onValueChange={field.onChange}
-                        // defaultValue={field.value}
                         value={field.value}
                         disabled={!isStudent}
                       >
