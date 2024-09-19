@@ -49,6 +49,7 @@ export interface DataTableProps<TData, TValue> {
   totalRows: number;
   setCurrentPage: Dispatch<SetStateAction<number>>;
   setRowsPerPage: Dispatch<SetStateAction<10 | 20 | 30 | 40 | 50>>;
+  withPagination?: boolean;
 }
 
 export function DataTable<TData, TValue>({
@@ -61,6 +62,7 @@ export function DataTable<TData, TValue>({
   hiddenColumns = {},
   setCurrentPage,
   setRowsPerPage,
+  withPagination = true,
 }: DataTableProps<TData, TValue>) {
   const [sorting, setSorting] = React.useState<SortingState>([]);
   const [columnFilters, setColumnFilters] = React.useState<ColumnFiltersState>(
@@ -202,51 +204,54 @@ export function DataTable<TData, TValue>({
           </TableBody>
         </Table>
       </div>
-      <div className="flex items-center justify-between p-2 bg-white">
-        <div className="flex-1 text-sm text-muted-foreground">
-          Total {totalRows}
-        </div>
-        <div className="flex items-center space-x-6 lg:space-x-8">
-          <div className="flex items-center space-x-2">
-            <p className="text-sm font-medium w-[120px]">Linhas por página</p>
-            <Select
-              value={`${table.getState().pagination.pageSize}`}
-              onValueChange={(value) => {
-                setRowsPerPage(Number(value) as 10 | 20 | 30 | 40 | 50);
-                setCurrentPage(1);
-              }}
-            >
-              <SelectTrigger className="h-8 w-[70px]">
-                <SelectValue
-                  placeholder={table.getState().pagination.pageSize}
-                />
-              </SelectTrigger>
-              <SelectContent side="top">
-                {[10, 20, 30, 40, 50].map((pageSize) => (
-                  <SelectItem key={pageSize} value={`${pageSize}`}>
-                    {pageSize}
-                  </SelectItem>
-                ))}
-              </SelectContent>
-            </Select>
+      {withPagination && (
+        <div className="flex items-center justify-between p-2 bg-white">
+          <div className="flex-1 text-sm text-muted-foreground">
+            Total {totalRows}
           </div>
-          <Pagination>
-            <PaginationContent>
-              <Button disabled={!(currentPage > 1)}>
-                <PaginationPrevious
-                  onClick={() => handlePageChange(currentPage - 1)}
-                />
-              </Button>
-              {generatePaginationItems()}
+
+          <div className="flex items-center space-x-6 lg:space-x-8">
+            <div className="flex items-center space-x-2">
+              <p className="text-sm font-medium w-[120px]">Linhas por página</p>
+              <Select
+                value={`${table.getState().pagination.pageSize}`}
+                onValueChange={(value) => {
+                  setRowsPerPage(Number(value) as 10 | 20 | 30 | 40 | 50);
+                  setCurrentPage(1);
+                }}
+              >
+                <SelectTrigger className="h-8 w-[70px]">
+                  <SelectValue
+                    placeholder={table.getState().pagination.pageSize}
+                  />
+                </SelectTrigger>
+                <SelectContent side="top">
+                  {[10, 20, 30, 40, 50].map((pageSize) => (
+                    <SelectItem key={pageSize} value={`${pageSize}`}>
+                      {pageSize}
+                    </SelectItem>
+                  ))}
+                </SelectContent>
+              </Select>
+            </div>
+            <Pagination>
+              <PaginationContent>
+                <Button disabled={!(currentPage > 1)}>
+                  <PaginationPrevious
+                    onClick={() => handlePageChange(currentPage - 1)}
+                  />
+                </Button>
+                {generatePaginationItems()}
                 <Button disabled={!(currentPage < pagesCount)}>
                   <PaginationNext
                     onClick={() => handlePageChange(currentPage + 1)}
                   />
                 </Button>
-            </PaginationContent>
-          </Pagination>
+              </PaginationContent>
+            </Pagination>
+          </div>
         </div>
-      </div>
+      )}
     </div>
   );
 }

@@ -106,8 +106,8 @@ export type FilterAppointment = {
     gender?: Gender
     minAge?: number
     maxAge?: number
-    minDate?: Date
-    maxDate?: Date
+    minDate?: Date | string
+    maxDate?: Date | string
     course?: Courses
     education?: Education
     isActive?: boolean
