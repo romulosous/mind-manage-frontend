@@ -5,25 +5,28 @@ export interface Patient {
     name: string;
     email: string;
     password: string;
-    registration?: string | null;
-    course?: Courses | null;
-    education?: Education | null;
+    birth?: Date | string | number;
+    registration?: string;
+    course?: Courses;
+    education?: Education;
     age: number;
     phone: string;
     gender: Gender;
     patientType: PatientType;
     attachment: attachment[];
-    series?: string | null;
+    series?: string;
     createdAt: Date;
-    updatedAt: Date | null;
+    updatedAt: Date;
     psychologicalDisorder?: psychologicalDisorder[];
     relationship?: Relationship[];
     createdBy: CreatedBy;
-    isActive?: boolean | null;
+    isActive?: boolean;
     difficulty?: Difficulty[];
     Appointment?: Appointment[];
     Session?: Session[];
     Anamenese?: Anamenese[];
+    otherRelationship?: string;
+    sessions?: number;
 }
 
 export enum Gender {

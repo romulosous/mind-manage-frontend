@@ -12,8 +12,8 @@ export const patientApi = {
         const response = await API.post(`${baseUrl}`, body)
         return response
     },
-    updatePatient: async (body: any) => {
-        const response = await API.put(`${baseUrl}`, body)
+    updatePatient: async (id: string | number, body: any) => {
+        const response = await API.put(`${baseUrl}/${id}`, body)
         return response
     },
     deletePatient: async (id: string | number) => {
