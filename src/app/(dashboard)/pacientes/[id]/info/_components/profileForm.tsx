@@ -48,6 +48,7 @@ import {
 } from "@/components/ui/select";
 import { patientApi } from "@/services/patient";
 import { useParams } from "next/navigation";
+import { PhoneNumber } from "@/functions/format-phone-number";
 
 const formSchema = z.object({
   name: z.string().min(2, {
@@ -219,7 +220,8 @@ export function ProfileForm() {
 
   function onSubmit(values: z.infer<typeof formSchema>) {
     const dateBirth = convertToISODate(values.birth as string);
-    const payload = { ...values, birth: dateBirth };
+    const phoneWithoutMask = PhoneNumber.removeFormatting(values.phone);
+    const payload = { ...values, birth: dateBirth, phone: phoneWithoutMask };
     delete payload.sessions;
 
     if(params.id === "new") {
@@ -330,17 +332,21 @@ export function ProfileForm() {
 
       const birth = formatDate(response.birth as string);
 
+      const phone = PhoneNumber.format(response.phone);
+      console.log("phone", phone);
+
       const state = {
         name: response.name,
         email: response.email,
-        phone: response.phone,
+        phone: phone,
         birth: birth,
         patientType: response.patientType,
         registration: response.registration,
         course: response.course,
         education: response.education,
         series: response.series,
-        sessions: response.sessions,
+        // sessions: response.sessions,
+        sessions: response.Session?.length || 0,
         psychologicalDisorder: response.psychologicalDisorder,
         difficulty: response.difficulty,
         relationship: response.relationship,
@@ -404,7 +410,10 @@ export function ProfileForm() {
                   <FormItem className="flex-1">
                     <FormLabel>Telefone:</FormLabel>
                     <FormControl>
-                      <Input placeholder="Telefone" {...field} />
+                      <Input placeholder="Telefone" value={field.value} onChange={(e) => {
+                        const phone = PhoneNumber.format(e.target.value);
+                        form.setValue("phone", phone);
+                      }} />
                     </FormControl>
                     <FormMessage />
                   </FormItem>
