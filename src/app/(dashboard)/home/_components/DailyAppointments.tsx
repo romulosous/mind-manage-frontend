@@ -6,40 +6,19 @@ import styles from "./DailyAppointments.module.css";
 import {
   Appointment as IAppointments,
   Status,
-  StatusDisplay,
   typeAppointment,
-  typeAppointmentDisplay,
 } from "@/@types/agendamentos";
 import { Button } from "@/components/ui/button";
-import { Calendar } from "@/components/ui/calendar";
 import {
-  Popover,
-  PopoverContent,
-  PopoverTrigger,
-} from "@/components/ui/popover";
-import {
-  ArrowUpDown,
-  SearchIcon,
-  Calendar as CalendarIcon,
+  ArrowUpDown
 } from "lucide-react";
 
 import { useEffect, useState } from "react";
-import { Input } from "@/components/ui/input";
-import {
-  Select,
-  SelectContent,
-  SelectItem,
-  SelectTrigger,
-  SelectValue,
-} from "@/components/ui/select";
+
 import { AppointmentApi } from "@/services/appointments";
 import { FilterAppointment } from "@/@types/agendamentos";
 import Loading from "@/components/Loading";
-import { DataTable } from "@/components/data-table";
 import { PatientType, PatientTypeDisplay } from "@/@types/patient";
-import { ptBR } from "date-fns/locale";
-import { cn } from "@/lib/utils";
-import { DateRange } from "react-day-picker";
 import { DailyAppointmentsTable } from "./DailyAppointmentsTable";
 
 export const columns: ColumnDef<IAppointments>[] = [
