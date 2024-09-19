@@ -237,10 +237,7 @@ export function ProfileForm() {
   const hasOtherRelationship = selectedRelationship.includes("OTHER");
   // 2. Define a submit handler.
   function onSubmit(values: z.infer<typeof formSchema>) {
-    console.log("params.id: ", params.id);
-    // remover prop session do objeto values
-    const dateBirth = convertToISODate(values.birth);
-    console.log("dateBirth", dateBirth);
+    const dateBirth = convertToISODate(values.birth as string);
     const payload = { ...values, birth: dateBirth };
     delete payload.sessions;
 
