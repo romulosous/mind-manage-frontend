@@ -1,4 +1,5 @@
 import Layout from "../_components/Layout";
+import { History } from "./_components/History";
 
 interface PatientDetailsPageProps {
   params: {
@@ -16,7 +17,7 @@ export default function PatientHistoryPage({
 
   return (
     <Layout>
-      <h1>historico</h1>
+      <History />
     </Layout>
   );
 }

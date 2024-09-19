@@ -37,6 +37,7 @@ import {
   PaginationNext,
   PaginationPrevious,
 } from "@/components/ui/pagination";
+import { Button } from "./ui/button";
 
 export interface DataTableProps<TData, TValue> {
   columns: ColumnDef<TData, TValue>[];
@@ -151,8 +152,8 @@ export function DataTable<TData, TValue>({
 
   return (
     <div className="">
-      <div className="rounded-md border">
-        <Table className="bg-white rounded-lg">
+      <div className="">
+        <Table className="bg-white rounded-lg rounded-b-none">
           <TableHeader>
             {table.getHeaderGroups().map((headerGroup) => (
               <TableRow key={headerGroup.id}>
@@ -207,7 +208,7 @@ export function DataTable<TData, TValue>({
         </div>
         <div className="flex items-center space-x-6 lg:space-x-8">
           <div className="flex items-center space-x-2">
-            <p className="text-sm font-medium">Linhas por página</p>
+            <p className="text-sm font-medium w-[120px]">Linhas por página</p>
             <Select
               value={`${table.getState().pagination.pageSize}`}
               onValueChange={(value) => {
@@ -221,7 +222,7 @@ export function DataTable<TData, TValue>({
                 />
               </SelectTrigger>
               <SelectContent side="top">
-                {[2, 10, 20, 30, 40, 50].map((pageSize) => (
+                {[10, 20, 30, 40, 50].map((pageSize) => (
                   <SelectItem key={pageSize} value={`${pageSize}`}>
                     {pageSize}
                   </SelectItem>
@@ -229,24 +230,19 @@ export function DataTable<TData, TValue>({
               </SelectContent>
             </Select>
           </div>
-          <div className="flex w-[100px] items-center justify-center text-sm font-medium">
-            Page {table.getState().pagination.pageIndex + 1} of{" "}
-            {table.getPageCount()}
-          </div>
-
           <Pagination>
             <PaginationContent>
-              {currentPage > 1 && (
+              <Button disabled={!(currentPage > 1)}>
                 <PaginationPrevious
                   onClick={() => handlePageChange(currentPage - 1)}
                 />
-              )}
+              </Button>
               {generatePaginationItems()}
-              {currentPage < pagesCount && (
-                <PaginationNext
-                  onClick={() => handlePageChange(currentPage + 1)}
-                />
-              )}
+                <Button disabled={!(currentPage < pagesCount)}>
+                  <PaginationNext
+                    onClick={() => handlePageChange(currentPage + 1)}
+                  />
+                </Button>
             </PaginationContent>
           </Pagination>
         </div>
