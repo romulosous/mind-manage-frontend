@@ -353,12 +353,16 @@ export const DailyAppointments = () => {
         status: Status.CONFIRMED,
       });
 
-      // await saveBooking({
-      //   serviceId: service.id,
-      //   barbershopId: barbershop.id,
-      //   userId: (data.user as any).id,
-      //   date: newDate,
-      // });
+      await fetchDailyAppointments({
+        ...filters,
+        status: Status.CONFIRMED,
+      });
+  
+      await fetchDailyRescheduling({
+        ...filters,
+        status: Status.PENDING,
+      });
+
       setSheetIsOpen(false);
       setDate(undefined);
       setHour(undefined);
