@@ -8,6 +8,7 @@ import {
   Appointment as IAppointments,
   Status,
   typeAppointment,
+  typeAppointmentDisplay,
 } from "@/@types/agendamentos";
 import { Button } from "@/components/ui/button";
 import { ArrowUpDown, Loader2 } from "lucide-react";
@@ -35,6 +36,20 @@ import { ToastAction } from "@/components/ui/toast";
 import { generateDayTimeList } from "@/functions/hours";
 import { m } from "framer-motion";
 import { cn } from "@/lib/utils";
+import {
+  Select,
+  SelectContent,
+  SelectItem,
+  SelectTrigger,
+  SelectValue,
+} from "@/components/ui/select";
+import { Textarea } from "@/components/ui/textarea";
+import {
+  FormControl,
+  FormItem,
+  FormLabel,
+  FormMessage,
+} from "@/components/ui/form";
 
 export const columns: ColumnDef<IAppointments>[] = [
   {
@@ -190,7 +205,6 @@ export const resChedulingColumns: ColumnDef<IAppointments>[] = [
   },
 ];
 
-
 export interface IResponse<T> {
   data: T[];
 }
@@ -211,6 +225,11 @@ export const DailyAppointments = () => {
   const [submitIsLoading, setSubmitIsLoading] = useState(false);
   const [sheetIsOpen, setSheetIsOpen] = useState(false);
   const [dayBookings, setDayBookings] = useState<Appointment[]>([]);
+
+  const [selectedType, setSelectedType] = useState<typeAppointment>();
+  const [selectedPatientType, setSelectedPatientType] = useState<PatientType>();
+  const [complaint, setComplaint] = useState("");
+  const [observation, setObservation] = useState("");
 
   const [loading, setLoading] = useState(true);
 
@@ -260,11 +279,18 @@ export const DailyAppointments = () => {
       const dateMinutes = Number(hour.split(":")[1]);
 
       const newDate = setMinutes(setHours(date, dateHour), dateMinutes);
-      console.log("new Date: ", newDate.toISOString());
 
       // salvar data como .toISOString() com data e hora
       // const newDate = setMinutes(setHours(date, Number(hour.split(":")[0])), Number(hour.split(":")[1]));
       console.log("new Date: ", newDate.toISOString());
+
+      await AppointmentApi.createAppointment({
+        appointmentDate: newDate.toISOString(),
+        type: selectedType,
+        patientType: selectedPatientType,
+        complaint,
+        observation,
+      })
 
       // await saveBooking({
       //   serviceId: service.id,
@@ -297,11 +323,31 @@ export const DailyAppointments = () => {
   const handleDayDateClick = (date: Date | undefined) => {
     setDayDate(date);
   };
- 
-  
+
   const handleHourClick = (time: string) => {
     setHour(time);
   };
+
+  const AppointmentsTypeOptions = Object.keys(typeAppointmentDisplay).map(
+    (key) => ({
+      value: key,
+      label: typeAppointmentDisplay[key as typeAppointment],
+    })
+  );
+
+  const PatientTypeOptions = Object.keys(PatientTypeDisplay).map((key) => ({
+    value: key,
+    label: PatientTypeDisplay[key as PatientType],
+  }));
+
+  const onAppointmentsTypeValueChange = async (value: any) => {
+    setSelectedType(value);
+  };
+
+  const onPatientTypeValueChange = async (value: any) => {
+    setSelectedPatientType(value);
+  };
+
   const timeList = useMemo(() => {
     if (!date) return [];
 
@@ -344,7 +390,6 @@ export const DailyAppointments = () => {
       return false;
     });
   }, [date, dayBookings]);
-
 
   useEffect(() => {
     fetchDailyAppointments({
@@ -398,10 +443,9 @@ export const DailyAppointments = () => {
     return <Loading />;
   }
 
-
   return (
-    <div className="grid gap-10" style={{gridTemplateColumns: "1fr 380px"}}>
-      <div className="flex flex-col gap-5">
+    <div className="flex justify-between gap-4">
+      <div className="flex flex-1 flex-col gap-5">
         <div>
           <h1 className="text-[#159A9C] text-[25px] font-semibold mb-1">
             Sessões do dia
@@ -451,7 +495,7 @@ export const DailyAppointments = () => {
       </div>
 
       <div className="flex flex-col gap-5">
-        <div className="py-6 w-[400px] m-auto">
+        <div className="py-6 w-[400px]">
           <Calendar
             mode="single"
             selected={dayDate}
@@ -494,7 +538,7 @@ export const DailyAppointments = () => {
               </Button>
             </SheetTrigger>
 
-            <SheetContent className="p-0">
+            <SheetContent className="p-0 overflow-auto">
               <SheetHeader className="text-left px-5 py-6 border-b border-solid border-secondary">
                 <SheetTitle>Agendar</SheetTitle>
               </SheetHeader>
@@ -547,7 +591,7 @@ export const DailyAppointments = () => {
                 </div>
               )}
 
-              <div className="py-6 px-5 border-t border-solid border-secondary">
+              <div className="py-6 px-5 border-t border-solid border-secondary flex flex-col gap-4">
                 {/* <BookingInfo
                       booking={{
                         barbershop: barbershop,
@@ -561,6 +605,51 @@ export const DailyAppointments = () => {
                             : undefined,
                       }}
                     /> */}
+                <div className="flex gap-4">
+                  <Select
+                    onValueChange={(value) =>
+                      onAppointmentsTypeValueChange(value)
+                    }
+                  >
+                    <SelectTrigger className="w-[180px]">
+                      <SelectValue placeholder="Tipo" />
+                    </SelectTrigger>
+                    <SelectContent>
+                      {AppointmentsTypeOptions.map((option) => (
+                        <SelectItem key={option.value} value={option.value}>
+                          {option.label}
+                        </SelectItem>
+                      ))}
+                    </SelectContent>
+                  </Select>
+
+                  <Select
+                    onValueChange={(value) => onPatientTypeValueChange(value)}
+                  >
+                    <SelectTrigger className="w-[180px]">
+                      <SelectValue placeholder="Função" />
+                    </SelectTrigger>
+                    <SelectContent>
+                      {PatientTypeOptions.map((option) => (
+                        <SelectItem key={option.value} value={option.value}>
+                          {option.label}
+                        </SelectItem>
+                      ))}
+                    </SelectContent>
+                  </Select>
+                </div>
+                <Textarea
+                  className="border-secondary border-[2px] h-28"
+                  placeholder="Queixa"
+                  value={complaint}
+                  onChange={(e) => setComplaint(e.target.value)}
+                />
+                <Textarea
+                  className="border-secondary border-[2px] h-28"
+                  placeholder="Observação"
+                  value={observation}
+                  onChange={(e) => setObservation(e.target.value)}
+                />
               </div>
 
               <SheetFooter className="px-5">
