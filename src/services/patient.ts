@@ -2,10 +2,17 @@ import { API } from "@/config"
 
 const baseUrl = "/patient"
 
+interface Response {
+    data: [];
+    currentPage: number;
+    totalPages: number;
+    count: number;
+  }
+
 export const patientApi = {
     fetchPatients: async (filters: any) => {
         const query = new URLSearchParams(filters).toString()
-        const response = await API.get(`${baseUrl}?${query}`)
+        const response = await API.get<Response>(`${baseUrl}?${query}`)
         return response
     },
     createPatient: async (body: any) => {

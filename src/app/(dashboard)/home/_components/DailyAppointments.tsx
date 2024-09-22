@@ -18,7 +18,12 @@ import { useEffect, useMemo, useState } from "react";
 import { AppointmentApi } from "@/services/appointments";
 import { FilterAppointment } from "@/@types/agendamentos";
 import Loading from "@/components/Loading";
-import { PatientType, PatientTypeDisplay } from "@/@types/patient";
+import {
+  Patient,
+  PatientType,
+  PatientTypeDisplay,
+  SearchPatient,
+} from "@/@types/patient";
 import { DailyAppointmentsTable } from "./DailyAppointmentsTable";
 import { Calendar } from "@/components/ui/calendar";
 import {
@@ -29,6 +34,23 @@ import {
   SheetTitle,
   SheetTrigger,
 } from "@/components/ui/sheet";
+
+import {
+  Command,
+  CommandEmpty,
+  CommandGroup,
+  CommandInput,
+  CommandItem,
+  CommandList,
+} from "@/components/ui/command";
+import {
+  Popover,
+  PopoverContent,
+  PopoverTrigger,
+} from "@/components/ui/popover";
+
+import { Check, ChevronsUpDown } from "lucide-react";
+
 import { useRouter } from "next/navigation";
 import { useToast } from "@/hooks/use-toast";
 import { ptBR } from "date-fns/locale";
@@ -50,6 +72,7 @@ import {
   FormLabel,
   FormMessage,
 } from "@/components/ui/form";
+import { patientApi } from "@/services/patient";
 
 export const columns: ColumnDef<IAppointments>[] = [
   {
@@ -214,9 +237,19 @@ export const DailyAppointments = () => {
   const [dailyAppointmentData, setDailyAppointmentData] = useState<
     IAppointments[]
   >([]);
+
+  // const [patients, setPatients] = useState<Patient[]>([]);
+  const [searchPatient, setSearchPatient] = useState<string>("");
+  const [search, setSearch] = useState<string>("");
+
+  const [patientsOptions, setPatientsOptions] = useState<
+    { value: string, label: string }[]>([])
+
   const [dailyReschedulingData, setDailyReschedulingData] = useState<
     IAppointments[]
   >([]);
+
+  const [open, setOpen] = useState(false);
 
   const [date, setDate] = useState<Date | undefined>();
   const [dayDate, setDayDate] = useState<Date | undefined>();
@@ -239,9 +272,27 @@ export const DailyAppointments = () => {
     type: typeAppointment.SESSION,
   });
 
-  const fetchDailyAppointments = async (
+  const fetchPatients = async (
     params: FilterAppointment = { limit: 10 }
   ) => {
+    try {
+      const response = await patientApi.fetchPatients(params);
+      // setDailyAppointmentData(response.data);
+      const patientOptions = response.data.map((patient) => ({
+        value: patient?.id +"",
+        label: patient?.name,
+      }));
+      setPatientsOptions(patientOptions);
+      // setPatients(response.data);
+    } catch (error) {
+      console.log(error);
+    } finally {
+      setLoading(false);
+    }
+  };
+
+
+  const fetchDailyAppointments = async (params: SearchPatient = { limit: 10 }) => {
     try {
       const response = await AppointmentApi.fetchAppointments(params);
       setDailyAppointmentData(response.data);
@@ -251,6 +302,14 @@ export const DailyAppointments = () => {
       setLoading(false);
     }
   };
+
+  useEffect(() => {
+      fetchPatients({
+        limit: 10,
+        name: search
+      });
+    // }
+  }, [search]);
 
   const fetchDailyRescheduling = async (
     params: FilterAppointment = { limit: 10 }
@@ -287,10 +346,12 @@ export const DailyAppointments = () => {
       await AppointmentApi.createAppointment({
         appointmentDate: newDate.toISOString(),
         type: selectedType,
-        patientType: selectedPatientType,
-        complaint,
+        // patientType: selectedPatientType,
+        reason: complaint,
         observation,
-      })
+        patientId: searchPatient,
+        status: Status.CONFIRMED,
+      });
 
       // await saveBooking({
       //   serviceId: service.id,
@@ -347,6 +408,7 @@ export const DailyAppointments = () => {
   const onPatientTypeValueChange = async (value: any) => {
     setSelectedPatientType(value);
   };
+
 
   const timeList = useMemo(() => {
     if (!date) return [];
@@ -650,6 +712,62 @@ export const DailyAppointments = () => {
                   value={observation}
                   onChange={(e) => setObservation(e.target.value)}
                 />
+              </div>
+
+              <div>
+                <Popover open={open} onOpenChange={setOpen}>
+                  <PopoverTrigger asChild>
+                    <Button
+                      variant="outline"
+                      role="combobox"
+                      aria-expanded={open}
+                      className="w-[200px] justify-between"
+                    >
+                      {searchPatient
+                        ? patientsOptions.find(
+                            (patient) => patient.value === searchPatient
+                          )?.label
+                        : "Selecionar Paciente..."}
+                      <ChevronsUpDown className="ml-2 h-4 w-4 shrink-0 opacity-50" />
+                    </Button>
+                  </PopoverTrigger>
+                  <PopoverContent className="w-[200px] p-0">
+                    <Command>
+                      <CommandInput onValueChange={(value) =>{
+                        setSearch(value);
+                      }}  placeholder="Search framework..." />
+                      <CommandList>
+                        <CommandEmpty>No Paciente found.</CommandEmpty>
+                        <CommandGroup>
+                          {patientsOptions.map((patient) => (
+                            <CommandItem
+                              key={patient.value}
+                              value={patient.value}
+                              onSelect={(currentValue) => {
+                                setSearchPatient(
+                                  currentValue === searchPatient
+                                    ? ""
+                                    : currentValue
+                                );
+                                setOpen(false);
+                              }}
+                            >
+                              <Check
+                                className={cn(
+                                  "mr-2 h-4 w-4",
+                                  searchPatient === patient.value
+                                    ? "opacity-100"
+                                    : "opacity-0"
+                                )}
+                              />
+                              {patient.label}
+                            </CommandItem>
+                          ))}
+                        </CommandGroup>
+                      </CommandList>
+                    </Command>
+                  </PopoverContent>
+                </Popover>
               </div>
 
               <SheetFooter className="px-5">
