@@ -23,9 +23,9 @@ import React from "react";
 import style from "./DailyAppointmentsTable.module.css";
 
 export interface DailyAppointmentsTableProps<TData, TValue> {
-  columns: ColumnDef<TData, TValue>[];
+  columns: ColumnDef<TData, TValue>[] | any;
   data: TData[];
-  totalRows: number;
+  totalRows?: number;
 }
 
 export function DailyAppointmentsTable<TData, TValue>({

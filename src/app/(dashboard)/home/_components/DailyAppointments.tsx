@@ -6,6 +6,7 @@ import styles from "./DailyAppointments.module.css";
 import {
   Appointment,
   Appointment as IAppointments,
+  SearchAppointment,
   Status,
   typeAppointment,
   typeAppointmentDisplay,
@@ -52,7 +53,6 @@ import {
 import { Check, ChevronsUpDown } from "lucide-react";
 
 import { useRouter } from "next/navigation";
-import { useToast } from "@/hooks/use-toast";
 import { ptBR } from "date-fns/locale";
 import { ToastAction } from "@/components/ui/toast";
 import { generateDayTimeList } from "@/functions/hours";
@@ -278,8 +278,8 @@ export const DailyAppointments = () => {
     try {
       const response = await patientApi.fetchPatients(params);
       // setDailyAppointmentData(response.data);
-      const patientOptions = response.data.map((patient) => ({
-        value: patient?.id +"",
+      const patientOptions = response.data.map((patient: Patient) => ({
+        value: patient?.id ? patient?.id.toString() : "",
         label: patient?.name,
       }));
       setPatientsOptions(patientOptions);
@@ -292,7 +292,7 @@ export const DailyAppointments = () => {
   };
 
 
-  const fetchDailyAppointments = async (params: SearchPatient = { limit: 10 }) => {
+  const fetchDailyAppointments = async (params: SearchAppointment = { limit: 10 }) => {
     try {
       const response = await AppointmentApi.fetchAppointments(params);
       setDailyAppointmentData(response.data);
@@ -522,12 +522,6 @@ export const DailyAppointments = () => {
                 <DailyAppointmentsTable
                   data={dailyAppointmentData}
                   columns={columns}
-                  hiddenColumns={{
-                    phoneNumber: false,
-                    address: false,
-                    createdAt: false,
-                    updatedAt: false,
-                  }}
                 />
               ) : (
                 "loading"
@@ -545,12 +539,6 @@ export const DailyAppointments = () => {
                 <DailyAppointmentsTable
                   data={dailyReschedulingData}
                   columns={resChedulingColumns}
-                  hiddenColumns={{
-                    phoneNumber: false,
-                    address: false,
-                    createdAt: false,
-                    updatedAt: false,
-                  }}
                 />
               ) : (
                 "loading"

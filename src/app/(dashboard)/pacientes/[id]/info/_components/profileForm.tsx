@@ -1,3 +1,4 @@
+/* eslint-disable react/jsx-key */
 "use client";
 
 import { zodResolver } from "@hookform/resolvers/zod";
